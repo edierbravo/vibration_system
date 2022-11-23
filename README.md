@@ -3,6 +3,113 @@
 ## **Fecha de realización:** 22 de Noviembre del 2022
 
 
+
+El tema seleccionado es de reservas de vuelos, en el cual se tienen diferentes parametros como source (Lugar de origen), destination (Lugar de destino), date (Fecha), days (Tiempo entre ida y regreso al lugar de origen) y passengers (Cantidad de personas). Ademas se implementa el metodo GET, POST, PUT, PATCH (para modificar la cantidad de pasageros de una respectiva reserva de vuelos) y DELETE.
+
+El contenido del archivo **app.controller.ts** queda de la siguiente manera.
+
+```
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { AppService } from './app.service';
+
+interface ticket {
+  source: string,
+  destination: string,
+  date: string,
+  days: number,
+  passengers: number
+}
+
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) { }
+
+  private  tickets: ticket[] = [{
+    source: "Popayan",
+    destination: "Bogota",
+    date: "16 Abril 2022",
+    days: 6,
+    passengers: 5
+  }]
+
+  @Get()
+  getHello(): ticket[] {
+    return this.tickets;
+  }
+
+  @Post()
+  crear(@Body() datos: ticket): ticket {
+    this.tickets.push(datos);
+    return datos;
+  }
+
+  @Put(":id")
+  modificar(@Body() datos: ticket, @Param('id') id: number): ticket | string {
+    try{
+    this.tickets[id] = datos
+    return this.tickets[id];
+    }
+    catch{
+      return `No fue posible modificar el vuelo en la posición ${id}`
+    }
+  }
+
+  @Delete(":id")
+  eliminar(@Param('id') id: number){
+    try{
+      this.tickets = this.tickets.filter((val, index) => index != id);
+      return true;
+    }
+    catch{
+      return false;
+    }
+  }
+
+  @Patch(":id/passengers/:passengers")
+  changePassengers(@Param('id') id: number, @Param('passengers') passengers: number): ticket | string{
+    try{
+      this.tickets[id].passengers = passengers;
+      return this.tickets[id];
+    }
+    catch{
+      return `No fue posible modificar el vuelo en la posición ${id}`
+    }
+  }
+}
+```
+
+Para comprobar el correcto funcionamiento del servidor se usa la herramienta **Postman**.
+
+**Metodo GET** (Consultar reservas de vuelos)
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/get.png?raw=true)
+
+**Metodo POST** (Crear una nueva reserva)
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/post.png?raw=true)
+
+**Metodo PUT** (Actualiza una reserva)
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/put.png?raw=true)
+
+**Metodo PATCH** (Modificar cantidad de personas de una reserva)
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/patch.png?raw=true)
+
+**Metodo DELETE** (Eliminar una reserva)
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/delete.png?raw=true)
+
+Finalmente se actualiza el repositorio Hithub.
+
+```
+cd ~Documents/Servidores/practica_02
+git add .
+git commit -m "Se completó la tarea"
+git push origin master
+```
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
