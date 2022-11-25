@@ -4,7 +4,7 @@ import { TicketFullService } from '../../domain/services/ticketfull.service';
 import { TicketFull } from '../../domain/models/ticketfull.model';
 import { TicketFullController } from './ticketfull.controller';
 
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guards';
 
 const errReturn = (e: Error, message: string) => {
   return {
@@ -27,7 +27,7 @@ export class TicketFullControllerImpl implements TicketFullController {
     }
   }
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() datos: TicketFull) {
     try{
