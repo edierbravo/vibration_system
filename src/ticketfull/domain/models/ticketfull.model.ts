@@ -1,5 +1,5 @@
-import { Ticket } from "./ticket";
+import { Ticket } from "./ticket.model";
 
 export class TicketFull extends Ticket{
-    returndate: String
+    returndate: Date;
 }

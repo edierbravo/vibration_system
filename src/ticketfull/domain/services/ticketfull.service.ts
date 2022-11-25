@@ -1,48 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import {TicketFull} from '../models/ticketfull.model'
+import { TicketFull } from "../models/ticketfull.model";
 
-@Injectable()
-export class TicketFullService {
-  cambiarRegreso(id: number, regreso: string) {
-    throw new Error('Method not implemented.');
-  }
-  private ticketfull: TicketFull[] = [{
-    passenger_name: "Edier",
-    source: "Popayan",
-    destination: "Bogota",
-    goingdate: '10-10-2022',
-    flight: "K34HT8",
-    returndate: '11/10/2022'
-  }]
+export interface TicketFullService {
 
-  public listar() : TicketFull[] {
-    return this.ticketfull
-  }
+   /**
+    * Retorna la lista de tiketes registrados
+    */
+   list(): TicketFull[];
 
-  public crear(tiketefull: TicketFull): TicketFull {
-    this.ticketfull.push(tiketefull);
-    return tiketefull;
-  }
+   /**
+    * Crea un nuevo tikete
+    * @param ticketfull datos del nuevo tikete
+    * @return Nuevo tikete
+    */
+   create(ticketfull: TicketFull): TicketFull;
 
-  public modificar(id: number, tiketefull: TicketFull): TicketFull {
-      this.ticketfull[id] = tiketefull
-      return this.ticketfull[id];
-  }
+   /**
+    * Actualiza datos del tikete
+    * @param id Identificador único del tikete
+    * @param ticketfull datos del tikete
+    * @return tikete modificado
+    */
+   update(id: number, ticketfull: TicketFull): TicketFull
 
-  public eliminar(id: number): boolean {
-    const totalTiketesAntes = this.ticketfull.length;
-    this.ticketfull = this.ticketfull.filter((val, index) => index != id);
-    if(totalTiketesAntes == this.ticketfull.length){
-      return false;
-    }
-    else{
-      return true;
-    }
-  }
+   /**
+    * Eliminar un tikete
+    * @param id Identificador único del tikete
+    * @return True si eliminó al tikete
+    */
+   delete(id: number): boolean
 
-   public cambiarReturno(id: number, returnDate: string): TicketFull {
-      this.ticketfull[id].returndate = returnDate;
-      return this.ticketfull[id];
-   }
-
+   /**
+    * Cambia la fecha de regrerso de un tikete
+    * @param id Identificador único del tikete
+    * @param returndate nuevo valor de la fecha de regreso 
+    */
+   updateReturn(id: number, returndate: Date): TicketFull
 }

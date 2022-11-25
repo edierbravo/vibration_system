@@ -2,6 +2,6 @@ export abstract class Ticket{
     passenger_name: string;
     source: string;
     destination: string;
-    goingdate: string;
+    goingdate: Date;
     flight: string 
 }

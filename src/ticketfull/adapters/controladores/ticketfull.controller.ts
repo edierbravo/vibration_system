@@ -1,66 +1,34 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
-import { TicketFullService as TicketFullService } from '../../domain/services/ticketfull.service';
+import { TicketFull } from '../../domain/models/ticketfull.model';
 
-import {TicketFull} from '../../domain/models/ticketfull.model';
+export interface TicketFullController {
+  /**
+   *  Retorna la lista de Tiketes de ida y vuelta
+   */
+  listTicketsFull();
 
-const errReturn = (e: Error, message: string) => {
-  return {
-    message: message,
-    error: e
-  }
-}
+  /**
+   * Crea un tikete
+   * @param datos Objeto con datos del tikete
+   */
+  create(datos: TicketFull);
 
-@Controller()
-export class TicketFullController {
-  constructor(private readonly tiketeService: TicketFullService) { }
+  /**
+   * Modifica datos de un tikete
+   * @param datos Objeto con datos de tikete
+   * @param id Identificador único del tikete
+   */
+  update(datos: TicketFull, id: number);
 
-  @Get()
-  getHello() {
-    try{
-      return this.tiketeService.listar();
-    }
-    catch(e){
-      return errReturn(e, "Error al listar tiketes");
-    }
-  }
+  /**
+   * Elimina un tikete
+   * @param id Identificador único del tikete
+   */
+  delete(id: number);
 
-  @Post()
-  crear(@Body() datos: TicketFull) {
-    try{
-      return this.tiketeService.crear(datos);
-    }
-    catch(e){
-      return errReturn(e, "Error al crear tikete");
-    }
-  }
-
-  @Put(":id")
-  modificar(@Body() datos: TicketFull, @Param('id') id: number) {
-    try{
-      return this.tiketeService.modificar(id, datos);
-    }
-    catch(e){
-      return errReturn(e, "Error al modificar tikete");
-    }
-  }
-
-  @Delete(":id")
-  eliminar(@Param('id') id: number) {
-    try{
-      return this.tiketeService.eliminar(id);
-    }
-    catch(e){
-      return errReturn(e, "Error al eliminar tikete");
-    }
-  }
-
-  @Patch(":id/regreso/:regreso")
-  cambiarRegreso(@Param('id') id: number, @Param('regreso') regreso: string) {
-    try{
-      return this.tiketeService.cambiarRegreso(id, regreso);
-    }
-    catch(e){
-      return errReturn(e, "Error al modificar fecha de regreso del tikete");
-    }
-  }
+  /**
+   * Cambia fecha de regrrso del tikete
+   * @param id Identificador único del tikete
+   * @param returndate fecha de regreso del vuelo
+   */
+  updateReturn(id: number, returndate: Date);
 }
