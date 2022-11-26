@@ -36,7 +36,7 @@ Nest is [MIT licensed](LICENSE).
 
 # Desarrollo
 
-Recordar que el tema elegido en la practica 2 fue de tiketes de vuelos de avion.
+Recordar que el tema elegido en la practica 2 fue de tiquetes de vuelos de avion.
 
 ## Arquitectura Hexagonal
 
@@ -472,6 +472,8 @@ Si se quita el usuario y contraseña al hacer la solicitud POST se tiene un erro
  
 ![post sencillo fail](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/postSencilloFail.png?raw=true)
 
+Hasta aqui la configuracion del proyecto queda como se muestra en este [Link.](https://github.com/edierbra/Practicas_IoT_Edier/tree/08eaf1e86cd77b2e191bb387cf38ea5acc13acfc)
+
 # Autenticación con JWT
 
 1. Para esto primero se instala el paquete **@nestjs/jwt**.
@@ -507,7 +509,7 @@ export class AuthService {
    }
    ````
 
-3. Se implementa un endpoint para convertir las credenciales del usuario en un token JWT y de esta manera permirir el inicio de secion por parte de los usuarios. Para esto se crea un nuevo archivo denominado ** auth.controller.ts** con el siguiente contenido.
+3. Se implementa un endpoint para convertir las credenciales del usuario en un token JWT y de esta manera permirir el inicio de secion por parte de los usuarios. Para esto se crea un nuevo archivo denominado **auth.controller.ts** con el siguiente contenido.
 
 ```
 import { Controller, Post, Request, UseGuards } from '@nestjs/common';
@@ -707,6 +709,35 @@ export class TicketFullControllerImpl implements TicketFullController {
 }
 ```
 
+finalmente la configuracion del proyecto queda como se muestra en este [Link.](https://github.com/edierbra/Practicas_IoT_Edier/tree/ff56f6154b51f3c797c53b372c1c9b25e94dd2f1)
+
+12. Se realizan pruebas en la herramienta **Postman**.
+
+En los endpoint protegidos con JWT es necesario usar un el token que anteriormente se solicito.
+
+Para configurar el token en Postman, se elige la opcion de **Authorization**, en esta se escoge la opcion **Bearer Token** y se copea el token en la casilla ubicada a la derecha.
+
+acontinuacion se muestran algunas imagenes al ejecutar ciertos metodos despues de implementar la autenticacion JWT.
+
+**Metodo GET** (Consultar tiquetes )
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/get.png?raw=true)
+
+**Metodo POST** (Crear un tiquete)
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/post.png?raw=true)
+
+**Metodo PUT** (Actualiza un tiquete)
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/put.png?raw=true)
+
+**Metodo PATCH** (Modificar la fecha de regreso del tiquete)
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/patch.png?raw=true)
+
+**Metodo DELETE** (Eliminar un tiquete)
+
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/delete.png?raw=true)
 
 
 
