@@ -17,6 +17,7 @@ const errReturn = (e: Error, message: string) => {
 export class TicketFullControllerImpl implements TicketFullController {
   constructor(@Inject('TicketFullService') private readonly tiketeService: TicketFullService) { }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   listTicketsFull() {
     try{
@@ -37,7 +38,7 @@ export class TicketFullControllerImpl implements TicketFullController {
       return errReturn(e, "Error al crear tikete");
     }
   }
-
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   update(@Body() datos: TicketFull, @Param('id') id: number) {
     try{
@@ -47,7 +48,7 @@ export class TicketFullControllerImpl implements TicketFullController {
       return errReturn(e, "Error al modificar tikete");
     }
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   delete(@Param('id') id: number) {
     try{
@@ -57,7 +58,7 @@ export class TicketFullControllerImpl implements TicketFullController {
       return errReturn(e, "Error al eliminar fecha de regreso del tikete");
     }
   }
-
+  @UseGuards(JwtAuthGuard)
   @Patch(":id/regreso/:regreso")
   updateReturn(@Param('id') id: number, @Param('regreso') regreso: Date) {
     try{
