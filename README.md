@@ -1,5 +1,11 @@
-# PRACTICA 1
+# PRACTICA 1: PROTOCOLOS TCP Y UDP
 **Por** *Edier Bravo*
+
+## Objetivos de la práctica
+
+1. Crear un entorno Linux virtual para evaluar servicios empleando herramientas como VirtualBox, Github y Docker.
+2. Identificar en Linux mecanismos para la identificación de ocupación de puertos y a qué servicio está relacionado
+3. Implementar un pequeño servicio cliente/servidor en Python empleando TCP y UDP, a partir de ello establecer cual es más adecuado para ciertos.
 
 ## 1. Configuracion del entorno.
 
@@ -267,3 +273,13 @@ finally:
 Se ejecuta el archivo **server.py** `python3 server.py` en la maquina Lubuntu y luego el archivo **client.py** en Windows.
 
 ![Ver imagen: conexion TCP desde diferentes maquinas](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/udpWindows.png?raw=true)
+
+De acuerdo a lo anterior se puede decir que entre sus cararcteristicas principales se encuentran:
+
+| **Caracteristica**    | **TCP**         | **UDP**           |
+|-------------------|-------------|---------------|
+| **Servicio**  | Es un protocolo orientado a la conexión; es decir, los dispositivos deben establecer una conexión antes de transmitir datos.   | Es un protocolo orientado a datagramas. |
+| **Velocidad**   | Mas lento que UDP | Mas rapido que TCP  |
+| **Fiabilidad** | Es confiable ya que garantiza la entrega de datos al  destino. | No se puede garantizar la entrega de datos al destino.  |
+| **Retransmisión** | La retransmisión de paquetes perdidos es posible.  | No hay retransmisión de paquetes perdidos.  |
+|  **Comprobación de errores** | Proporciona control de flujo y reconocimiento de datos.  | Solo tiene el mecanismo básico de verificación de errores mediante sumas de verificación.  |
