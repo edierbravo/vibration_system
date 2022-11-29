@@ -2,11 +2,12 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/
 import { AppService } from './app.service';
 
 interface ticket {
+  passenger_name: string,
   source: string,
   destination: string,
-  date: string,
-  days: number,
-  passengers: number
+  goingdate: Date,
+  flight: string,
+  returndate: Date
 }
 
 @Controller()
@@ -14,11 +15,12 @@ export class AppController {
   constructor(private readonly appService: AppService) { }
 
   private  tickets: ticket[] = [{
+    passenger_name: "Edier",
     source: "Popayan",
     destination: "Bogota",
-    date: "16 Abril 2022",
-    days: 6,
-    passengers: 5
+    goingdate: new Date(2022-12-25),
+    flight: "ABC567",
+    returndate: new Date(2022-12-29)
   }]
 
   @Get()
@@ -54,10 +56,10 @@ export class AppController {
     }
   }
 
-  @Patch(":id/passengers/:passengers")
-  changePassengers(@Param('id') id: number, @Param('passengers') passengers: number): ticket | string{
+  @Patch(":id/returndate/:returndate")
+  changePassengers(@Param('id') id: number, @Param('returndate') returndate: Date): ticket | string{
     try{
-      this.tickets[id].passengers = passengers;
+      this.tickets[id].returndate = returndate;
       return this.tickets[id];
     }
     catch{
