@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { TicketFull } from '../models/ticketfull.model';
 import { TicketFullService } from './ticketfull.service';
+import { TicketFullEntity } from '../entities/ticketfull.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class TicketFullServiceImpl implements TicketFullService {
+  constructor(
+    @InjectRepository(TicketFullEntity)
+    private repository: MongoRepository<TicketFullEntity>,
+ ) {}
 
   private Ticketfull: TicketFull[] = [{
     passenger_name: "Edier",
