@@ -3,7 +3,7 @@ import { Entity, Column, ObjectIdColumn } from 'typeorm';
 @Entity('tikectfull')
 export class TicketFullEntity {
    @ObjectIdColumn()
-   id: number;
+   id: string;
 
    @Column()
    passenger_name: string;
@@ -12,7 +12,7 @@ export class TicketFullEntity {
    source: string;
 
    @Column()
-   destination: number;
+   destination: string;
 
    @Column()
    goingdate: Date;

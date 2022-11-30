@@ -7,9 +7,9 @@ export interface TicketFullService {
  
    create(ticketfull: TicketFullEntity): Promise<InsertResult>;
  
-   update(id: number, ticketfullData: TicketFullEntity): Promise<UpdateResult>;
+   update(id: string, ticketfullData: TicketFullEntity): Promise<UpdateResult>;
  
-   delete(id: number): Promise<boolean>;
+   delete(id: string): Promise<boolean>;
  
-   updateReturn(id: number, retorno: Date): Promise<UpdateResult>;
+   updateReturn(id: string, retorno: Date): Promise<UpdateResult>;
  }

@@ -39,7 +39,7 @@ export class TicketFullControllerImpl implements TicketFullController {
   }
   
   @Put(":id")
-  update(@Body() datos: TicketFullEntity, @Param('id') id: number) {
+  update(@Body() datos: TicketFullEntity, @Param('id') id: string) {
     try{
       return this.tiketeService.update(id, datos);
     }
@@ -49,7 +49,7 @@ export class TicketFullControllerImpl implements TicketFullController {
   }
   @UseGuards(JwtAuthGuard)
   @Delete(":id")
-  delete(@Param('id') id: number) {
+  delete(@Param('id') id: string) {
     try{
       return this.tiketeService.delete(id);
     }
@@ -59,7 +59,7 @@ export class TicketFullControllerImpl implements TicketFullController {
   }
   @UseGuards(JwtAuthGuard)
   @Patch(":id/regreso/:regreso")
-  updateReturn(@Param('id') id: number, @Param('regreso') regreso: Date) {
+  updateReturn(@Param('id') id: string, @Param('regreso') regreso: Date) {
     try{
       return this.tiketeService.updateReturn(id, regreso);
     }

@@ -17,18 +17,18 @@ export interface TicketFullController {
    * @param datos Objeto con datos de tikete
    * @param id Identificador único del tikete
    */
-  update(datos: TicketFullEntity, id: number);
+  update(datos: TicketFullEntity, id: string);
 
   /**
    * Elimina un tikete
    * @param id Identificador único del tikete
    */
-  delete(id: number);
+  delete(id: string);
 
   /**
    * Cambia fecha de regrrso del tikete
    * @param id Identificador único del tikete
    * @param returndate fecha de regreso del vuelo
    */
-  updateReturn(id: number, returndate: Date);
+  updateReturn(id: string, returndate: Date);
 }

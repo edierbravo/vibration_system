@@ -22,19 +22,19 @@ export class TicketFullServiceImpl implements TicketFullService {
   }
  
   public async update(
-    id: number,
+    id: string,
     ticketfullData: TicketFullEntity,
   ): Promise<UpdateResult> {
     const updatedTicketFull = await this.repository.update(id, ticketfullData);
     return updatedTicketFull;
   }
  
-  public async delete(id: number): Promise<boolean> {
+  public async delete(id: string): Promise<boolean> {
     const deleteResult = await this.repository.delete(id);
     return deleteResult.affected > 0;
   }
  
-  public async updateReturn(id: number, retorno: Date): Promise<UpdateResult> {
+  public async updateReturn(id: string, retorno: Date): Promise<UpdateResult> {
     const updatedTicketFull = await this.repository.update(id, { returndate: retorno });
     return updatedTicketFull;
   }
