@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { TicketFullService } from '../../domain/services/ticketfull.service';
 
-import { TicketFull } from '../../domain/models/ticketfull.model';
+import { TicketFullEntity } from 'src/ticketfull/domain/entities/ticketfull.entity';
 import { TicketFullController } from './ticketfull.controller';
 
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guards';
@@ -23,28 +23,28 @@ export class TicketFullControllerImpl implements TicketFullController {
       return this.tiketeService.list();
     }
     catch(e){
-      return errReturn(e, "Error al listar tiketes");
+      return errReturn(e, "Error al listar tiquetes");
     }
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() datos: TicketFull) {
+  create(@Body() datos: TicketFullEntity) {
     try{
       return this.tiketeService.create(datos);
     }
     catch(e){
-      return errReturn(e, "Error al crear tikete");
+      return errReturn(e, "Error al crear tiquete");
     }
   }
   
   @Put(":id")
-  update(@Body() datos: TicketFull, @Param('id') id: number) {
+  update(@Body() datos: TicketFullEntity, @Param('id') id: number) {
     try{
       return this.tiketeService.update(id, datos);
     }
     catch(e){
-      return errReturn(e, "Error al modificar tikete");
+      return errReturn(e, "Error al modificar tiquete");
     }
   }
   @UseGuards(JwtAuthGuard)
@@ -54,7 +54,7 @@ export class TicketFullControllerImpl implements TicketFullController {
       return this.tiketeService.delete(id);
     }
     catch(e){
-      return errReturn(e, "Error al eliminar fecha de regreso del tikete");
+      return errReturn(e, "Error al eliminar fecha de regreso del tiquete");
     }
   }
   @UseGuards(JwtAuthGuard)
@@ -64,7 +64,7 @@ export class TicketFullControllerImpl implements TicketFullController {
       return this.tiketeService.updateReturn(id, regreso);
     }
     catch(e){
-      return errReturn(e, "Error al modificar fecha de regreso del tikete");
+      return errReturn(e, "Error al modificar fecha de regreso del tiquete");
     }
   }
 }

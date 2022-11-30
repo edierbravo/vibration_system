@@ -1,6 +1,6 @@
 import { Entity, Column, ObjectIdColumn } from 'typeorm';
 
-@Entity()
+@Entity('tikectfull')
 export class TicketFullEntity {
    @ObjectIdColumn()
    id: string;

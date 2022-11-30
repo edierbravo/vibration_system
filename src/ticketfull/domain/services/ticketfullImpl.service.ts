@@ -1,54 +1,41 @@
 import { Injectable } from '@nestjs/common';
-import { TicketFull } from '../models/ticketfull.model';
-import { TicketFullService } from './ticketfull.service';
-import { TicketFullEntity } from '../entities/ticketfull.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MongoRepository } from 'typeorm';
+import { InsertResult, MongoRepository, UpdateResult } from 'typeorm';
+/*import { TicketFull } from '../models/ticketfull.model';*/
+import { TicketFullEntity } from '../entities/ticketfull.entity';
+import { TicketFullService } from './ticketfull.service';
 
 @Injectable()
 export class TicketFullServiceImpl implements TicketFullService {
   constructor(
     @InjectRepository(TicketFullEntity)
     private repository: MongoRepository<TicketFullEntity>,
- ) {}
+  ) {}
 
-  private Ticketfull: TicketFull[] = [{
-    passenger_name: "Edier",
-    source: "Popayan",
-    destination: "Bogota",
-    goingdate: new Date("2022-12-10"), 
-    flight: "456TYG",
-    returndate: new Date("2022-12-20"),
-  }]
-
-  public list() : TicketFull[] {
-    return this.Ticketfull
+  public async list(): Promise<TicketFullEntity[]> {
+    return await this.repository.find();
   }
-
-  public create(tikete: TicketFull): TicketFull {
-    this.Ticketfull.push(tikete);
-    return tikete;
+ 
+  public async create(ticketfullData: TicketFullEntity): Promise<InsertResult> {
+    const newTicketFull = await this.repository.insert(ticketfullData);
+    return newTicketFull;
   }
-
-  public update(id: number, tikete: TicketFull): TicketFull {
-      this.Ticketfull[id] = tikete
-      return this.Ticketfull[id];
+ 
+  public async update(
+    id: number,
+    ticketfullData: TicketFullEntity,
+  ): Promise<UpdateResult> {
+    const updatedTicketFull = await this.repository.update(id, ticketfullData);
+    return updatedTicketFull;
   }
-
-  public delete(id: number): boolean {
-    const totalTiketesAntes = this.Ticketfull.length;
-    this.Ticketfull = this.Ticketfull.filter((val, index) => index != id);
-    if(totalTiketesAntes == this.Ticketfull.length){
-      return false;
-    }
-    else{
-      return true;
-    }
+ 
+  public async delete(id: number): Promise<boolean> {
+    const deleteResult = await this.repository.delete(id);
+    return deleteResult.affected > 0;
   }
-
-   public updateReturn(id: number, retorno: Date): TicketFull {
-      this.Ticketfull[id].returndate = retorno;
-      return this.Ticketfull[id];
-   }
-
+ 
+  public async updateReturn(id: number, retorno: Date): Promise<UpdateResult> {
+    const updatedTicketFull = await this.repository.update(id, { returndate: retorno });
+    return updatedTicketFull;
+  }
 }

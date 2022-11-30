@@ -12,7 +12,7 @@ import { TicketFullEntity } from './ticketfull/domain/entities/ticketfull.entity
     UsersModule,
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: 'mongodb+srv://edierbra:<password>@cluster0.i7cneqx.mongodb.net/?retryWrites=true&w=majority',
+      url: 'mongodb+srv://edierbra:ingenieriaMongodb@cluster0.i7cneqx.mongodb.net/?retryWrites=true&w=majority',
       useNewUrlParser: true,
       useUnifiedTopology: true,
       synchronize: true, // Solo para desarrollo

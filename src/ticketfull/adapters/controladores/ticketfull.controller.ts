@@ -1,4 +1,4 @@
-import { TicketFull } from '../../domain/models/ticketfull.model';
+import { TicketFullEntity } from 'src/ticketfull/domain/entities/ticketfull.entity';
 
 export interface TicketFullController {
   /**
@@ -10,14 +10,14 @@ export interface TicketFullController {
    * Crea un tikete
    * @param datos Objeto con datos del tikete
    */
-  create(datos: TicketFull);
+  create(datos: TicketFullEntity);
 
   /**
    * Modifica datos de un tikete
    * @param datos Objeto con datos de tikete
    * @param id Identificador único del tikete
    */
-  update(datos: TicketFull, id: number);
+  update(datos: TicketFullEntity, id: number);
 
   /**
    * Elimina un tikete
