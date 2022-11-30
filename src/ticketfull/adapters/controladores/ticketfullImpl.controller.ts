@@ -37,7 +37,7 @@ export class TicketFullControllerImpl implements TicketFullController {
       return errReturn(e, "Error al crear tikete");
     }
   }
-  @UseGuards(JwtAuthGuard)
+  
   @Put(":id")
   update(@Body() datos: TicketFull, @Param('id') id: number) {
     try{
