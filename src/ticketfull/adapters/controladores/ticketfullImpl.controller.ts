@@ -17,7 +17,6 @@ const errReturn = (e: Error, message: string) => {
 export class TicketFullControllerImpl implements TicketFullController {
   constructor(@Inject('TicketFullService') private readonly tiketeService: TicketFullService) { }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   listTicketsFull() {
     try{
