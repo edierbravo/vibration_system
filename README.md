@@ -1,4 +1,7 @@
-# **Nombre:** Edier Dario Bravo Bravo
+# **Práctica 4: Desplegando en la nube**
+
+## **Nombre:** Edier Dario Bravo Bravo
+
 ## **Nombre de la asignatura:** Electiva Desarrollo de Software - Web Semántica loT
 ## **Fecha de realización:** 25 de Noviembre del 2022
 
@@ -30,714 +33,289 @@
 ## License
 Nest is [MIT licensed](LICENSE).
 
-# Requisitos
+## Objetivos
 
-- Haber desarrollado la practica 2.
+1. Desplegar una aplicación en la nube.
+2. Agregar una base de datos a la aplicación.
 
-# Desarrollo
+## Requisitos
 
-Recordar que el tema elegido en la practica 2 fue de tiquetes de vuelos de avion.
+1. Desarrollar Practica 3: Seguridad y Calidad
 
-## Arquitectura Hexagonal
+## Desarrollo
 
-1. Para iniciar esta practica se crea una nueva rama denominada **hexagonal**, en la cual se van a guardar el proceso de esta practica.
+### 1. Desplegar una aplicacion en la nube.
 
-```
-git checkout -b hexagonal master
-```
+Para el desarrollo de esta practica se utiliza el servicio de hosting gratuido **Deta**
 
-Para tener la estructura hexagonal se deben hacer los siguientes cambios en la estructura del codigo, donde **nombre_entidad** es **ticketfull**.
-
-- src
-  - <nombre_entidad>
-    - adapters
-      - controllers
-        - <nombre_entidad>.controller.ts
-      - repositories
-        - <nombre_entidad>.repository.ts (nuevo archivo)
-    - domain
-      - models
-        - <nombre_entidad>.model.ts (nuevo archivo)
-      - services
-        - <nombre_entidad>.service.ts
-
-Ademas de mover los archivos **app.controllers** a la carpeta **controllers** y el archivo **app.service.ts** a la carpeta **service**, no olvidar de cambiarle el nombre de la clase de estos dos archivos.
-
-3. Por otro lado se tiene la carpeta **models**, la cual se usa para modelar los datos y de esta manera agregar nuevos roles con sus respectivas entidades. Dentro de esta carpeta se encontraran dos archivos: 
-
-El archivo **ticketfull.model.ts** que extiende la funcionalidad del modelo tiene el siguiente contenido.
+Primero se descarga **Deta**
 
 ```
-import { Ticket } from "./ticket";
-
-export class TicketFull extends Ticket{
-    returndate: String
-}
+curl -fsSL https://get.deta.dev/cli.sh | sh
 ```
 
-El archivo **ticket.ts**  que sera el modelo para futuros roles tiene el siguiente contenido.
+Se agrega la variable de entorno
 
 ```
-export abstract class Ticket{
-    passenger_name: string;
-    source: string;
-    destination: string;
-    goingdate: string;
-    flight: string 
-}
-```
-4. Se crea un nuevo archivo denominado **ticketfull.service.ts**   dentro de la carpeta **service** con el objetivo de migrar las funcionalidades que antes el controlasdor tenia. El contenido de este archivo queda.
-
-```
-import { Injectable } from '@nestjs/common';
-import {TicketFull} from '../models/ticketfull.model'
-
-@Injectable()
-export class TicketFullService {
-  cambiarRegreso(id: number, regreso: string) {
-    throw new Error('Method not implemented.');
-  }
-  private ticketfull: TicketFull[] = [{
-    passenger_name: "Edier",
-    source: "Popayan",
-    destination: "Bogota",
-    goingdate: '10-10-2022',
-    flight: "K34HT8",
-    returndate: '11/10/2022'
-  }]
-
-  public listar() : TicketFull[] {
-    return this.ticketfull
-  }
-
-  public crear(tiketefull: TicketFull): TicketFull {
-    this.ticketfull.push(tiketefull);
-    return tiketefull;
-  }
-
-  public modificar(id: number, tiketefull: TicketFull): TicketFull {
-      this.ticketfull[id] = tiketefull
-      return this.ticketfull[id];
-  }
-
-  public eliminar(id: number): boolean {
-    const totalTiketesAntes = this.ticketfull.length;
-    this.ticketfull = this.ticketfull.filter((val, index) => index != id);
-    if(totalTiketesAntes == this.ticketfull.length){
-      return false;
-    }
-    else{
-      return true;
-    }
-  }
-
-   public cambiarReturno(id: number, returnDate: string): TicketFull {
-      this.ticketfull[id].returndate = returnDate;
-      return this.ticketfull[id];
-   }
-
-}
-```
-5. Dentro del controlador (**ticketfull.controller.ts**) se hace la implementacion sel servicio. Dentro de este es importante corregir errores para lo cual se agregan bloques **try/catch**. El controlador queda asi.
-
-```
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
-import { TicketFullService as TicketFullService } from '../../domain/services/ticketfull.service';
-
-import {TicketFull} from '../../domain/models/ticketfull.model';
-
-const errReturn = (e: Error, message: string) => {
-  return {
-    message: message,
-    error: e
-  }
-}
-
-@Controller()
-export class TicketFullController {
-  constructor(private readonly tiketeService: TicketFullService) { }
-
-  @Get()
-  getHello() {
-    try{
-      return this.tiketeService.listar();
-    }
-    catch(e){
-      return errReturn(e, "Error al listar tiketes");
-    }
-  }
-
-  @Post()
-  crear(@Body() datos: TicketFull) {
-    try{
-      return this.tiketeService.crear(datos);
-    }
-    catch(e){
-      return errReturn(e, "Error al crear tikete");
-    }
-  }
-
-  @Put(":id")
-  modificar(@Body() datos: TicketFull, @Param('id') id: number) {
-    try{
-      return this.tiketeService.modificar(id, datos);
-    }
-    catch(e){
-      return errReturn(e, "Error al modificar tikete");
-    }
-  }
-
-  @Delete(":id")
-  eliminar(@Param('id') id: number) {
-    try{
-      return this.tiketeService.eliminar(id);
-    }
-    catch(e){
-      return errReturn(e, "Error al eliminar tikete");
-    }
-  }
-
-  @Patch(":id/regreso/:regreso")
-  cambiarRegreso(@Param('id') id: number, @Param('regreso') regreso: string) {
-    try{
-      return this.tiketeService.cambiarRegreso(id, regreso);
-    }
-    catch(e){
-      return errReturn(e, "Error al modificar fecha de regreso del tikete");
-    }
-  }
-}
+echo "export PATH=~/.deta/bin:$PATH" >> ~/.bashrc
+source ~/.bashrc
 ```
 
-Hasta este punto la practica queda como se obserba en este [Link](https://github.com/edierbra/Practicas_IoT_Edier/blob/6f89a3c6aaffe1e7c313311c3f2bb8604b9e167b/src/ticketfull/adapters/controladores/ticketfull.controller.ts)
-
-6. Es importante aplicar el principio SOLID, el cual define los siguientes principios:
-
- - Single Responsability Principle (Principio de Responsabilidad Única): Una clase debe tener una única responsabilidad y debe estar abierta a extensión pero cerrada a modificación.
-
- - Open-Closed Principle (Principio de Abierto-Cerrado): Las entidades de software (clases, módulos, funciones, etc.) deben estar abiertas a la extensión pero cerradas a la modificación.
-
- - Liskov Substitution Principle (Principio de Sustitución de Liskov): Las entidades de software (clases, módulos, funciones, etc.) deben ser sustituibles por instancias de sus subtipos sin alterar la correctitud del programa.
-
- - Interface Segregation Principle (Principio de Segregación de Interfaces): Las interfaces de software (clases, módulos, funciones, etc.) deben ser lo más pequeñas posibles.
-
- - Dependency Inversion Principle (Principio de Inversión de Dependencias): Las entidades de software (clases, módulos, funciones, etc.) deben depender de abstracciones y no de implementaciones.
-
-## Implementar Seguridad
-
-Para implementar un sistema de autentificacion y autorizacion se realoizan los siguientes pasos.
-
-1. se instalan los paquetes necesarios que permitiran aplicar seguridad en este sistema.
+Se inicia sesion en Deta ejecutando
 
 ```
-npm install --save @nestjs/passport passport passport-local
-npm install --save-dev @types/passport-local
+login deta
 ```
 
-2. **NestJS** permite la autenticación, por lo cual dentro de la carpeta del proyecto se crea un modulo de autenticacion usando los siguientes comandos.
+Si no tiene una cuenta deta debe crearla en este [Link](https://web.deta.sh/signup)
+
+Luego se crea un punto de entrada de la aplicación, para lo cual se crea un archivo **index.ts** dentro de la carpeta **src** de nuestro proyecto. El archivo debe contener el siguiente contenido.
 
 ```
-nest g module auth
-nest g service auth
-```
+import { NestFactory } from '@nestjs/core';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import { AppModule } from './app.module';
 
-![nestAuth](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/nestAuth.png?raw=true)
+const createNestServer = async (expressInstance) => {
+const app = await NestFactory.create(
+   AppModule,
+   new ExpressAdapter(expressInstance),
+);
 
-Acontiniacion se podra ver una carpeta llamada **auth** dentro de **src** y contendra los archivos **auth.module.ts**, **auth.service.ts** y **auth.service.spec.ts**. Este ultimo contiene las pruebas unitarias del servicio, el cual no se utilizara.
-
-![Archivos carpeta auth](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/auth.png?raw=true)
-
-3. **NestJS** tambien permite crear un modulo para gestionar usuarios, para lo cual se ejecutan los siguientes comandos dentro de la carpeta del proyecto. Esto creara una nueva carpeta llamada **users** dentro de **src**
-
-```
-nest g module users
-nest g service users
-```
-![nestUsers](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/nestUsers.png?raw=true)
-
-4. Para implementar el servicio de usuarios se modifica el archivo **users.service.ts** que esta dentro de la carpeta **users** de la siguiente manera. Este archivo contendra los usarios y sus respectivas contraseñas y se usara por el servicio de autenticacion.
-
-```
-import { Injectable } from '@nestjs/common';
-
-export type User = {
-   userId: number,
-   username: string,
-   password: string
+return app.init();
 };
 
-@Injectable()
-export class UsersService {
-   private readonly users: User[] = [
-      {
-         userId: 1,
-         username: 'edier',
-         password: 'bravo',
-      },
-      {
-         userId: 2,
-         username: 'dario',
-         password: 'bravo',
-      },
-      {
-         userId: 2,
-         username: 'edier',
-         password: 'dario',
-      },
-   ];
-
-   /**
-      * Recupera los datos del usuario
-      * @param username Nombre de usuario
-      * @returns 
-      */
-   async findOne(username: string): Promise<User | undefined> {
-      return this.users.find(user => user.username === username);
-   }
-}
+export default createNestServer;
 ```
 
-5. Para que el servicio de usuarios este disponible en otros servicios es necesario configuran los modulos, en este caso se modifica el archivo **users.module.ts** de la siguiente manera.
+Igualmente en la raiz de nuestro proyecto crear un archivo *index.js** con el siguiente contenido.
+
+```
+const express = require('express');
+const createServer = require('./dist/index').default;
+
+const app = express();
+let nest;
+
+app.use(async (req, res) => {
+if (!nest) {
+   nest = express();
+   await createServer(nest);
+}
+return nest(req, res);
+});
+
+module.exports = app;
+```
+
+Se compila el proyecto mediante el siguiente comando. Este comando se debe ejecuitar en la carpeta raiz de nuestro proyecto.
+
+```
+nest build
+```
+
+Se publica la aplicacion para lo cual se ejecuta.
+
+```
+deta new --node ./<directorio_del_proyecto>/
+```
+
+- En nuestro caso: `deta new --node ./practica2/`
+- NOTA: En **practica2** se encuentran los archivos correspondientes a la practica 3, la cual es la aplicacion que se va a desplegar a la nube en esta seccion. 
+
+Una vez ejecutado el aterior comando te debe aparecer lo siguiente en la terminal
+
+![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/detaNewNode.png?raw=true)
+
+![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/detaNewNode2.png?raw=true)
+
+
+Se desplega la aplicacion mediante el comando.
+
+```
+deta deploy <nombre_proyecto>
+```
+
+Se activan los logs de la aplicación, para lo cual en la raiz de nuestro proyecto se ejecuta el comando.
+
+```
+deta visor enable
+```
+
+Nos dirigimos a la pagina de **Deta** donde anteriormente se habia iniciado sesion, ahi nos ubicamos en la seccion de **micros** donde se observara una opcion con el nombre de nuestro proyecto en la cual se encontrara la **url** del servicio desplegado.
+
+![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/interfazDeta.png?raw=true)
+
+Al abrir la url aparecera lo siguiente. lo cual corresponde a lo que se obtiene al implementar un metodo GET.
+
+![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/urlDeta.png?raw=true)
+
+### 2. Conectado a una base de datos.
+
+En este caso se empleara una base de datos no relacional orientada a documentos llamada MongoDB.
+
+Para crear nuestra base de datos seguir los siguientes pasos:
+1. Crea una cuenta gratuita en MongoDB Atlas, para lo cual se ingresa a este [LinK.](https://www.mongodb.com/atlas/database)
+
+2. Presione el botón **Build a Cluster** y seleccione la opción **Free Tier**, se recomienda elegir **AWS** como proveedor de infraestructura y presione el botón **Create Cluster.**
+
+3. Una vez creado el cluster, es necesario crear un usuario, En los campos correspondientes ingrese un nombre de usuario y una contraseña y Presione el botón **Add User.**
+
+![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/userCreate.png?raw=true)
+
+4. Para facilitar la conexión la base de datos se recomienda crear una IP whitelist, para ello presione el botón **Add IP Address** y seleccione la opción **Allow Access from Anywhere**. Presione el botón **Confirm**. Si no encuentra esta opción ingrese una IP Address y en el campo asigne el valor **0.0.0.0**, finalmente presione el botón **Add Entry**.
+
+![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/ingresandoIp.png?raw=true)
+
+5. Finalmente se guarda y despliegua haciendo click en el botón **Finish and close**. En este punto ya tendrá una base de datos MongoDB lista para ser utilizada.
+
+![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/dataBaseOk.png?raw=true)
+
+Se instalan las dependencias de TypeORM y MongoDB 
+
+![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/installMongodb.png?raw=true)
+
+En el panel de mongo atlas, en la sección **Connect** seleccione la opción **Connect your application**. Copie la url de conexión y reemplace el valor de la variable MONGO_URL en el archivo **~/Documents/Servidores/practica2/src/app.module.ts** por la url de conexion; ademas, se agrega la entidad en la configuración del módulo para habilitar el repositorio. Por lo tanto el archivo queda.
 
 ```
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { TicketFullControllerImpl } from './ticketfull/adapters/controladores/ticketfullImpl.controller';
+import { TicketFullServiceImpl } from './ticketfull/domain/services/ticketfullImpl.service';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TicketFullEntity } from './ticketfull/domain/entities/ticketfull.entity';
 
 @Module({
-  providers: [UsersService],
-  exports: [UsersService],
+  imports: [
+    AuthModule,
+    UsersModule,
+    TypeOrmModule.forRoot({
+      type: 'mongodb',
+      url: 'mongodb+srv://Admin:Admin123db@cluster0.qnvonb3.mongodb.net/?retryWrites=true&w=majority',
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      synchronize: true, // Solo para desarrollo
+      logging: true,
+      autoLoadEntities: true,
+    }),
+    TypeOrmModule.forFeature([TicketFullEntity])
+  ],
+  controllers: [TicketFullControllerImpl],
+  providers: [
+    {
+      provide: 'TicketFullService',
+      useClass: TicketFullServiceImpl,
+    }
+  ],
 })
-export class UsersModule {}
+export class AppModule {}
 ```
 
-En la carpera **usrs** se encuentra ptro archivo denominado **users.service.spec.ts**, el cual contiene las pruebas unitarias del servicio, el cual no se utilizara.
-
-6. Para implementar un serviciuo de autenticacion (validar que el usuario y contraseña sean correctos), se modifica el archivo **auth.service.ts** de la siguiente manera.
+Se crea un nuevo archivo **ticketfull.entity.ts** en el directorio **src/ticketfull/domain/entities**, donde **ticketfull** es el nombre de nuestra entidad. El archivo queda.
 
 ```
-import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { Entity, Column, ObjectIdColumn } from 'typeorm';
 
+@Entity('tikectfull')
+export class TicketFullEntity {
+   @ObjectIdColumn()
+   id: string;
+
+   @Column()
+   passenger_name: string;
+
+   @Column()
+   source: string;
+
+   @Column()
+   destination: string;
+
+   @Column()
+   goingdate: Date;
+
+   @Column()
+   flight: string;
+
+   @Column()
+   returndate: Date;
+}
+```
+
+Se agrega el constructor del servicio en el archivo **ticketfullImpl.service.ts** que se encuentra en la carpeta **src/ticketfull/domain/services**
+
+```
+...
 @Injectable()
-export class AuthService {
-constructor(private usersService: UsersService) {}
-
-   async validateUser(username: string, pass: string): Promise<any> {
-      const user = await this.usersService.findOne(username);
-      if (user && user.password === pass) {
-         const { password, ...result } = user;
-         return result;
-      }
-      return null;
-   }
-}
-```
-7. Para la gestion de usuarios se modifica el archivo **auth.module.ts** de la siguiente manera.
-
-```
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module';
-
-@Module({
-   imports: [UsersModule], // Importa el módulo de usuarios
-   providers: [AuthService]
-})
-export class AuthModule {}
+export class TicketFullServiceImpl implements TicketFullService {
+  constructor(
+    @InjectRepository(TicketFullEntity)
+    private repository: MongoRepository<TicketFullEntity>,
+  ) {}
+...
 ```
 
-8. Para validar a los usuarios se necesita crear un nuevo archivo denominado **local.strategy.ts** que se encuentra en la carpeta **auth** con en siguiente contenido.
+Se reemplaza la implementación del modelo **TicketFull** por la entidad **TicketFullEntity** en el servicio **TicketFullServiceImpl**. De igual manera, como los datos toman tiempo para ser capturados del repositorio, se emplean Promesas. El cambio de **TicketFull** a **TicketFullEntity** se aplica en los servicios y controladores.
+
+Se modifican en el archivo **ticketfull.service.ts** los metodos de tal manera que utilicen el repositorio. 
 
 ```
-import { Strategy } from 'passport-local';
-import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from './auth.service';
-
-@Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
-   constructor(private authService: AuthService) {
-      super();
-   }
-
-   async validate(username: string, password: string): Promise<any> {
-      const user = await this.authService.validateUser(username, password);
-      if (!user) {
-         throw new UnauthorizedException();
-      }
-      return user;
-   }
-}
-```
-
-9. Para validar los usuarios con el anterior codigo, se modifica el archivo **auth.module.ts** de la siguiente forma.
-
-```
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
-
-@Module({
-   imports: [UsersModule, PassportModule],
-   providers: [AuthService, LocalStrategy]
-})
-export class AuthModule {}
-```
-
-10. una vez realizado los anteriores pasos se necesita aplicar estos cambios al controlador, por lo tanto el controlador queda de la siguiente forma.
-
-```
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
-import { TicketFullService } from '../../domain/services/ticketfull.service';
-
-import { TicketFull } from '../../domain/models/ticketfull.model';
-import { TicketFullController } from './ticketfull.controller';
-
-import { AuthGuard } from '@nestjs/passport';
-
-const errReturn = (e: Error, message: string) => {
-  return {
-    message: message,
-    error: e
+...
+  public async list(): Promise<TicketFullEntity[]> {
+    return await this.repository.find();
   }
-}
-
-@Controller()
-export class TicketFullControllerImpl implements TicketFullController {
-  constructor(@Inject('TicketFullService') private readonly tiketeService: TicketFullService) { }
-
-  @Get()
-  listTicketsFull() {
-    try{
-      return this.tiketeService.list();
-    }
-    catch(e){
-      return errReturn(e, "Error al listar tiketes");
-    }
-  }
-
-  @UseGuards(AuthGuard('local'))
-  @Post()
-  create(@Body() datos: TicketFull) {
-    try{
-      return this.tiketeService.create(datos);
-    }
-    catch(e){
-      return errReturn(e, "Error al crear tikete");
-    }
-  }
-
-  @Put(":id")
-  update(@Body() datos: TicketFull, @Param('id') id: number) {
-    try{
-      return this.tiketeService.update(id, datos);
-    }
-    catch(e){
-      return errReturn(e, "Error al modificar tikete");
-    }
-  }
-
-  @Delete(":id")
-  delete(@Param('id') id: number) {
-    try{
-      return this.tiketeService.delete(id);
-    }
-    catch(e){
-      return errReturn(e, "Error al eliminar fecha de regreso del tikete");
-    }
-  }
-
-  @Patch(":id/regreso/:regreso")
-  updateReturn(@Param('id') id: number, @Param('regreso') regreso: Date) {
-    try{
-      return this.tiketeService.updateReturn(id, regreso);
-    }
-    catch(e){
-      return errReturn(e, "Error al modificar fecha de regreso del tikete");
-    }
-  }
-}
-```
-
-11. Se realiuzan las respectivas pruebas.
-
-Al realisar una solicitud POST se observa lo siguiente.
-![Post sencillo](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/postSencillo.png?raw=true)
-
-En la anterior imagen se puede observar que la solicitud se realiza pero el usuario y contraseña quedan en el obejeto creado, lo cual no deberia pasar.
-
-Si se quita el usuario y contraseña al hacer la solicitud POST se tiene un error 401 como se muestra a continuacion. Esto pasa por que se prohibe el servicio por falta de autenticacion de usuario.
  
-![post sencillo fail](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/postSencilloFail.png?raw=true)
-
-Hasta aqui la configuracion del proyecto queda como se muestra en este [Link.](https://github.com/edierbra/Practicas_IoT_Edier/tree/08eaf1e86cd77b2e191bb387cf38ea5acc13acfc)
-
-# Autenticación con JWT
-
-1. Para esto primero se instala el paquete **@nestjs/jwt**.
-
-```
-npm install --save @nestjs/jwt passport-jwt
-npm install --save-dev @types/passport-jwt
-```
-
-![nestJwt](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/nestJWT.png?raw=true)
-
-2. Se agrega el metodo login y algunas dependencias al archivo **auth.service.ts**
-
-```
-import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt';
-
-@Injectable()
-export class AuthService {
-   constructor(
-      private usersService: UsersService,
-      private jwtService: JwtService
-   ) {}
-
-   async validateUser(username: string, pass: string): Promise<any> {
-      const user = await this.usersService.findOne(username);
-      if (user && user.password === pass) {
-         const { password, ...result } = user;
-         return result;
-      }
-      return null;
-   }
-   ````
-
-3. Se implementa un endpoint para convertir las credenciales del usuario en un token JWT y de esta manera permirir el inicio de secion por parte de los usuarios. Para esto se crea un nuevo archivo denominado **auth.controller.ts** con el siguiente contenido.
-
-```
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-
-@Controller('auth')
-export class AuthController {
-   constructor(private authService: AuthService) {}
-
-   @UseGuards(AuthGuard('local'))
-   @Post('login')
-   async login(@Request() req) {
-      return this.authService.login(req.user);
-   }
-}
-```
-
-4. Para guardar la contraseña JWT se crea un archivo denominado **constants.ts** que tendar la siguiente constante.
-
-```
-export const jwtSecret = 'secretKey';
-```
-
-5. Para permitirle al passport encontarr el token al presentarse una peticion y la contraseña para permitirle validarlo, se crea un nuevo archivo denominado **jwt.strategy.ts** con el siguiente contenido.
-
-```
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
-import { jwtSecret } from './constants';
-
-@Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
-   constructor() {
-      super({
-         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-         ignoreExpiration: false,
-         secretOrKey: jwtSecret,
-      });
-   }
-
-   async validate(payload: any) {
-      return { userId: payload.sub, username: payload.username };
-   }
-}
-```
-
-6. Se configura el servicio JWT en el archivo **auth.module.ts**
-
-```
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LocalStrategy } from './local.strategy';
-import { UsersModule } from '../users/users.module';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { AuthController } from './auth.controller';
-
-@Module({
-   controllers: [AuthController],
-   imports: [
-      UsersModule,
-      PassportModule,
-      JwtModule.register({
-         secret: "este es el secreto para generar JWT",
-         signOptions: { expiresIn: '60m' },
-      }),
-   ],
-   providers: [AuthService, LocalStrategy],
-   exports: [AuthService],
-   })
-export class AuthModule {}
-```
-
-7. Para interceptar un token y validarlo en los endpoints donde se ha aplicado, se crera un nuevo archivo denominado **jwt-auth.guards.ts** con el siguiente contenido.
-
-```
-import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-
-@Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {}
-```
-
-8. se actualizan los nuevos componentes en el archivo **auth.module.ts**
-
-```
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LocalStrategy } from './local.strategy';
-import { UsersModule } from '../users/users.module';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { AuthController } from './auth.controller';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { JwtStrategy } from './jwt.strategy';
-import { jwtSecret } from './constants';
-
-@Module({
-   controllers: [AuthController],
-   imports: [
-      UsersModule,
-      PassportModule,
-      JwtModule.register({
-         secret: jwtSecret,
-         signOptions: { expiresIn: '60m' },
-      }),
-   ],
-   providers: [AuthService, LocalStrategy, JwtStrategy, JwtAuthGuard],
-   exports: [AuthService],
-   })
-export class AuthModule {}
-```
-
-10. Se llama desde la terminal de nuestra maqiona al endpoint que generara un token JWT.
-
-```
-curl -X POST http://localhost:3000/auth/login -d '{"username": "edier", "password": "bravo" }' -H "Content-Type: application/json"
-```
-
-![Token](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/accessToken.png?raw=true)
-
-11. Se protegen los endpoints que sea necesario, para lo cual el controlador queda de la siguiente manera.
-
-```
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
-import { TicketFullService } from '../../domain/services/ticketfull.service';
-
-import { TicketFull } from '../../domain/models/ticketfull.model';
-import { TicketFullController } from './ticketfull.controller';
-
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guards';
-
-const errReturn = (e: Error, message: string) => {
-  return {
-    message: message,
-    error: e
+  public async create(ticketfullData: TicketFullEntity): Promise<InsertResult> {
+    const newTicketFull = await this.repository.insert(ticketfullData);
+    return newTicketFull;
   }
-}
+ 
+  public async update(
+    id: string,
+    ticketfullData: TicketFullEntity,
+  ): Promise<UpdateResult> {
+    const updatedTicketFull = await this.repository.update(id, ticketfullData);
+    return updatedTicketFull;
+  }
+ 
+  public async delete(id: string): Promise<boolean> {
+    const deleteResult = await this.repository.delete(id);
+    return deleteResult.affected > 0;
+  }
+ 
+  public async updateReturn(id: string, retorno: Date): Promise<UpdateResult> {
+    const updatedTicketFull = await this.repository.update(id, { returndate: retorno });
+    return updatedTicketFull;
+  }
+  ...
+  ```
 
-@Controller()
-export class TicketFullControllerImpl implements TicketFullController {
-  constructor(@Inject('TicketFullService') private readonly tiketeService: TicketFullService) { }
+Finalmente se ejecuta el proyecto.
 
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  listTicketsFull() {
-    try{
-      return this.tiketeService.list();
-    }
-    catch(e){
-      return errReturn(e, "Error al listar tiketes");
-    }
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post()
-  create(@Body() datos: TicketFull) {
-    try{
-      return this.tiketeService.create(datos);
-    }
-    catch(e){
-      return errReturn(e, "Error al crear tikete");
-    }
-  }
-  @UseGuards(JwtAuthGuard)
-  @Put(":id")
-  update(@Body() datos: TicketFull, @Param('id') id: number) {
-    try{
-      return this.tiketeService.update(id, datos);
-    }
-    catch(e){
-      return errReturn(e, "Error al modificar tikete");
-    }
-  }
-  @UseGuards(JwtAuthGuard)
-  @Delete(":id")
-  delete(@Param('id') id: number) {
-    try{
-      return this.tiketeService.delete(id);
-    }
-    catch(e){
-      return errReturn(e, "Error al eliminar fecha de regreso del tikete");
-    }
-  }
-  @UseGuards(JwtAuthGuard)
-  @Patch(":id/regreso/:regreso")
-  updateReturn(@Param('id') id: number, @Param('regreso') regreso: Date) {
-    try{
-      return this.tiketeService.updateReturn(id, regreso);
-    }
-    catch(e){
-      return errReturn(e, "Error al modificar fecha de regreso del tikete");
-    }
-  }
-}
+```
+npm run start:dev
 ```
 
-finalmente la configuracion del proyecto queda como se muestra en este [Link.](https://github.com/edierbra/Practicas_IoT_Edier/tree/ff56f6154b51f3c797c53b372c1c9b25e94dd2f1)
+![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/npmrunstartdev.png?raw=true)
 
-12. Se realizan pruebas en la herramienta **Postman**.
-
-En los endpoint protegidos con JWT es necesario usar un el token que anteriormente se solicito.
-
-Para configurar el token en Postman, se elige la opcion de **Authorization**, en esta se escoge la opcion **Bearer Token** y se copea el token en la casilla ubicada a la derecha.
-
-acontinuacion se muestran algunas imagenes al ejecutar ciertos metodos despues de implementar la autenticacion JWT.
+Acontinuacion se hara la implementacion de los diferentes metodos mediante la herramienta **Postman**
 
 **Metodo GET** (Consultar tiquetes )
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/get.png?raw=true)
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/get.png?raw=true)
 
 **Metodo POST** (Crear un tiquete)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/post.png?raw=true)
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/post.png?raw=true)
 
 **Metodo PUT** (Actualiza un tiquete)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/put.png?raw=true)
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/put.png?raw=true)
 
 **Metodo PATCH** (Modificar la fecha de regreso del tiquete)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/patch.png?raw=true)
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/patch.png?raw=true)
 
 **Metodo DELETE** (Eliminar un tiquete)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/delete.png?raw=true)
-
-
-
+![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/delete.png?raw=true)

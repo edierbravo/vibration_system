@@ -38,6 +38,7 @@ export class TicketFullControllerImpl implements TicketFullController {
     }
   }
   
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   update(@Body() datos: TicketFullEntity, @Param('id') id: string) {
     try{
