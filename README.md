@@ -1,6 +1,9 @@
-# **Nombre:** Edier Dario Bravo Bravo
+# **Práctica 2: Creando un servidor REST**
+
+## **Nombre:** Edier Dario Bravo Bravo
+
 ## **Nombre de la asignatura:** Electiva Desarrollo de Software - Web Semántica loT
-## **Fecha de realización:** 22 de Noviembre del 2022
+## **Fecha de realización:** 25 de Noviembre del 2022
 
 
 <p align="center">
@@ -26,6 +29,9 @@
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+
+## License
+Nest is [MIT licensed](LICENSE).
 
 # DESARROLLO
 
