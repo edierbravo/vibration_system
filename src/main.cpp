@@ -1,112 +1,212 @@
+//Este skecht se ha desarrollado para activar el bombillo a partir del umbral
+//también el ventilador cuando la temperatura suba por encima de cierto umbral
 #include <Arduino.h>
-#include <TinyGPS++.h>
-#include <SoftwareSerial.h>
-#include <WiFi.h>
-#include "ThingSpeak.h"
+#include <ChainableLED.h>
+#include <Wifi.h>
 
-char ssid[] = "DIRECT-eX-P"; // your network SSID (name)
-char pass[] = "ghostmend";   // your network password
+//*************** Coneción a ThinkSpeak *********
+#include <ThingSpeak.h>
 
-WiFiClient client;
+//------------------------- Activar WIFI ESP8266 -----------------------
+// #include <ESP8266WiFi.h>
 
-unsigned long myChannelNumber = 2001088;
-const char *myWriteAPIKey = "NT0153KAI4PTGWQW";
-const char *myReadAPIKey = "VPRUHCQ9MV2DNMSH";
 
-static const int RXPin = 3, TXPin = 1; // Here we make pin 4 as RX of arduino & pin 3 as TX of arduino
-static const uint32_t GPSBaud = 9600;
-TinyGPSPlus gps;
-SoftwareSerial ss(RXPin, TXPin);
+// Información del Canal y Campos de ThingSpeak
+char thingSpeakAddress[] = "api.thingspeak.com";
+unsigned long channelID = 2014575;
+char* readAPIKey = (char*)"MCVF18UY83B6ODE9"; //"70GGTLNT0EMFP0WO";
+char* writeAPIKey = (char*)"CE9J7FJ9UB7CANQH"; //"7ZBZ9LU15LQRYKRF";
+const unsigned long postingInterval = 20L * 1000L;
+unsigned int dataFieldOne = 1;                       // Calpo para escribir el estado de la Temperatura
+unsigned int dataFieldTwo = 2;                       // Campo para escribir el estado del Bombillo
+unsigned int dataFieldThree = 3;                     // Campo para escribir el estado del ventilador
+unsigned int dataFieldFour = 4;                      // FCampo para enviar el tiempo de medición
+//*************** Fin Conección ThinkSpeak *******
 
-void setup()
+
+char ssid[] = "Bravo";//"TP-Link_B520";
+char password[] = "12345678"; //"67097135";
+WiFiClient client;              //Cliente Wifi para ThingSpeak
+//-------------------------- Fin Configuración WIFI ESP8266 --------------
+
+//const int sensorluzpin = A3;    //Fotocelda Grove
+const int bombillopin = 2;      //Simulado con un led 13 en Arduino
+const int ventiladorpin = 5;    //Relay del ventilador
+const int temperaturapin = 36;  //Temperatura Grove 
+
+//Variables Globales
+int umbralLuz = 500;            //Es el umbral en el cual se enciende el bombillo
+int umbralTemperatura = 27;     //27 / Es el umbral en el cual se enciende el ventilador
+float luminosidad;              //Toma el valor en voltaje
+float temperatura;              //Toma el valor en grados
+boolean estadoventilador=false; //false = apagado
+boolean estadobombillo = false; //false = apagado
+
+//Métodos para encapsular las funcionalidades
+//Simular lectura de fotocelda 
+long fotoceldafuncion()
 {
-  Serial.begin(9600); // Initialize serial
-  ss.begin(GPSBaud);
-
-  while (!Serial)
-  {
-    ; // wait for serial port to connect. Needed for Leonardo native USB port only
-  }
-
-  WiFi.mode(WIFI_STA);
-  ThingSpeak.begin(client); // Initialize ThingSpeak
+  return random(1023);
 }
 
-void loop()
+//Funcion para obtener los valores de los sensores
+void LeerSensores(void)
 {
+   //leer el sensor de luz
+   //luminosidad = analogRead(sensorluzpin); 
+   luminosidad = fotoceldafuncion();
 
-  // Connect or reconnect to WiFi
-  if (WiFi.status() != WL_CONNECTED)
-  {
-    Serial.print("Attempting to connect to SSID: ");
-    // Serial.println(SECRET_SSID);
-    while (WiFi.status() != WL_CONNECTED)
-    {
-      WiFi.begin(ssid, pass); // Connect to WPA/WPA2 network. Change this line if using open or WEP network
-      Serial.print(".");
-      delay(5000);
+    //recibe la temperatura para el sensor LM35
+   //temperatura = analogRead(temperaturapin);   
+   //temperatura = (5.0 * temperatura * 100.0)/1024.0; 
+ 
+   //Lee estado de sensor de Temperatura para GROVE temp
+   int B=3975; //Valor del termistor
+   temperatura = analogRead(temperaturapin); //Obtencion del valor leido
+   float resistance=(float)(1023-temperatura)*10000/temperatura; //Obtencion del valor de la resistencia
+   temperatura=1/(log(resistance/10000)/B+1/298.15)-273.15; //Calculo de la temperatura
+}
+
+void ImprimirValoresSensores(void)
+{
+ //Imprimir los valores sensados
+  Serial.println("========================================");
+  
+ //Temeratura
+ Serial.print("Temperatura: ");
+ Serial.print(temperatura);
+ Serial.print(" ");
+ Serial.println(" ℃ ");
+
+ //Luminosidad
+ Serial.print("Luminosidad: ");
+ Serial.print(luminosidad);
+ Serial.print(" ");
+ Serial.println(" V. ");
+
+ //Estado del Bombillo
+ if (estadobombillo == false)
+    Serial.println("Bombillo Apagado");
+ else
+    Serial.println("Bombillo Encendido");
+
+ //Estado del Ventilador
+ if (estadoventilador == false)
+    Serial.println("Ventilador Apagado");
+ else
+    Serial.println("Ventilador Encendido");
+}
+
+boolean UmbraldeTemperatura(float umbral)
+{
+  if(temperatura > umbral){
+    digitalWrite(ventiladorpin, HIGH); 
+    delay(1000);
+    return true;
+  }  
+  else{
+    digitalWrite(ventiladorpin, LOW);  
+    delay(10); 
+    return false;
+  } 
+}
+
+boolean UmbraldeLuz(float umbral)
+{
+  //Envia una señal que activa o desactiva el relay
+  if(luminosidad < umbral){
+    digitalWrite(bombillopin, HIGH);
+    delay(1000);
+    return true;
+  }   
+  else{
+    digitalWrite(bombillopin, LOW);
+    delay(10);
+    return false;  
+  }
+}
+
+// Use this function if you want to write a single field
+int writeTSData( long TSChannel, unsigned int TSField, float data ){
+  int  writeSuccess = ThingSpeak.writeField( TSChannel, TSField, data, writeAPIKey ); // Write the data to the channel
+  if ( writeSuccess ){
+    //lcd.setCursor(0, 1);
+    //lcd.print("Send ThinkSpeak");
+    Serial.println( String(data) + " written to Thingspeak." );
     }
-    Serial.println("\nConnected.");
+    
+    return writeSuccess;
+}
+
+//use this function if you want multiple fields simultaneously
+int write2TSData( long TSChannel, unsigned int TSField1, 
+                  float field1Data,unsigned int TSField2, long field2Data,
+                  unsigned int TSField3, long field3Data ,
+                  unsigned int TSField4, long field4Data ){
+
+  ThingSpeak.setField( TSField1, field1Data );
+  ThingSpeak.setField( TSField2, field2Data );
+  ThingSpeak.setField( TSField3, field3Data );
+  ThingSpeak.setField( TSField4, field4Data );
+
+  int printSuccess = ThingSpeak.writeFields( TSChannel, writeAPIKey );
+  return printSuccess;
+}
+
+//metodo cliente para controlar los eventos R1 y R2
+void setup()
+{
+  //Abrir el puerto de lectura en el PC para mensajes
+  Serial.begin(9600);
+
+  //----------- Comando para Conectarse a la WIFI el ESP8266 ---------
+  Serial.println("Conectandose a la WIFI!");
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
   }
 
-  while (ss.available() > 0)
-    if (gps.encode(ss.read()))
-    {
-      Serial.print(F("Location: "));
-      if (gps.location.isValid())
-      {
-        Serial.print(gps.location.lat(), 6);
-        Serial.print(F(","));
-        Serial.print(gps.location.lng(), 6);
-        float latitud;
-        float longitud;
-        latitud = (float)gps.location.lat(), 6;
-        longitud = (float)gps.location.lng(), 6;
+  Serial.println("");
+  Serial.println("WiFi conectada");
+  Serial.println(WiFi.localIP());
+  //----------- Fin de conección ESP8266 -----------------------------
 
-        // set the fields with the values
-        ThingSpeak.setField(1, latitud);
-        ThingSpeak.setField(2, longitud);
+  //Establecer los modos de los puertos
+  //pinMode(sensorluzpin, INPUT);
+  pinMode(bombillopin, OUTPUT);
+  pinMode(ventiladorpin, OUTPUT);
+  pinMode(temperaturapin, INPUT);
 
-        // Write to ThingSpeak. There are up to 8 fields in a channel, allowing you to store up to 8 different
-        // pieces of information in a channel.  Here, we write to field 1.
-        int x = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
-        // int x = ThingSpeak.writeField(myChannelNumber, 1, latitud, myWriteAPIKey);
-        if (x == 200)
-        {
-          Serial.println("Channel update successful.");
-        }
-        else
-        {
-          Serial.println("Problem updating channel. HTTP error code " + String(x));
-        }
-      }
-      else
-      {
-        Serial.print(F("INVALID"));
-      }
+  //************ Conectar Cliente ThinkSpeak *******
+    ThingSpeak.begin( client );
+  //************ Fin Conectar Cliente ThingSpeak ***
+  
+  //Inicializar el generador de numeros aleatorios
+  randomSeed(analogRead(0));
+}
 
-      Serial.print(F("  Date "));
-      if (gps.date.isValid())
-      {
-        Serial.print(gps.date.month());
-        Serial.print(F("/"));
-        Serial.print(gps.date.day());
-        Serial.print(F("/"));
-        Serial.print(gps.date.year());
-      }
-      else
-      {
-        Serial.print(F("INVALID"));
-      }
+//metodo repetitivo
+unsigned long lastConnectionTime = 0;
+long lastUpdateTime = 0;
 
-      delay(3000);
-      Serial.println();
+void loop()                    
+{
+  // Only update if posting time is exceeded
+  if (millis() - lastUpdateTime >=  postingInterval) {
+    lastUpdateTime = millis();
+    LeerSensores();
+    ImprimirValoresSensores();
+
+    //Verificar los umbrales
+    estadoventilador = UmbraldeTemperatura(umbralTemperatura);
+    estadobombillo = UmbraldeLuz(umbralLuz);
+
+    //Enviar los Datos a ThinkSpeak
+    write2TSData( channelID , dataFieldOne , temperatura , 
+                      dataFieldTwo , estadobombillo,
+                      dataFieldThree , estadoventilador,
+                      dataFieldFour, millis());     
     }
-
-  if (millis() > 5000 && gps.charsProcessed() < 10)
-  {
-    Serial.println(F("No GPS detected: check wiring."));
-    while (true)
-      ;
-  }
 }

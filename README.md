@@ -1,4 +1,3 @@
 # Localizador de mascotas 
 
-Localizador de mascotas a través de GPS en tarjeta de Desarrollo.
-
+Detector de vibraciones para prevenir intentos de robo+
