@@ -1,7 +1,11 @@
-
 #include <Arduino.h>
 #include <SPI.h>
 #include <MFRC522.h>
+#include <ChainableLED.h>
+#include <Wifi.h>
+
+//*************** Coneción a ThinkSpeak *********
+#include <ThingSpeak.h>
 
 #if defined(ESP32)
   #define SS_PIN 5
@@ -59,6 +63,11 @@ int Ana_out = 0; // variable
 int B = 1; //boleado 1
 int Buzer=14; // led verificacion 14
 
+/////////////////// Configuracion WIFI ///////////////////
+char ssid[] = "Piso 1";//"TP-Link_B520";
+char password[] = "9003407381"; //"67097135";
+WiFiClient client;              //Cliente Wifi para ThingSpea
+
 ////////////////// FUNCIONES /////////////////
 
 String printHex(byte *buffer, byte bufferSize)
@@ -84,7 +93,7 @@ int verifivarRfid( String UserRegisters[], String Dato){
   {
     if(UserReg[i] == DatoHex)
     {
-      String S1 = "USUARIO "+String(i)+" - PUEDE INGRESAR"; 
+      String S1 = "USUARIO "+String(i+1)+" - PUEDE INGRESAR"; 
       Serial.println(S1);
       return a = 1;    
     }else{
@@ -111,8 +120,23 @@ int LeerVibracion(int vb, int Avb){
 
 void setup() 
 {
-  ///////////////////// setup RFID/////////////////
-   Serial.begin(9600);
+  //Abrir el puerto de lectura en el PC para mensajes
+  Serial.begin(9600);
+
+  /////////////////// Conección WIFI /////////////////
+  Serial.println("Conectandose a la WIFI!");
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+
+  Serial.println("");
+  Serial.println("WiFi conectada");
+  Serial.println(WiFi.localIP());
+
+  ///////////////////// setup RFID /////////////////
    SPI.begin(); // Init SPI bus
    rfid.PCD_Init(); // Init MFRC522
    Serial.println();
