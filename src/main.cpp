@@ -38,10 +38,8 @@
 
 ////////////// Variables globales RFID /////////////////////
 
-MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
-MFRC522::MIFARE_Key key;
-// Init array that will store new NUID
-byte nuidPICC[4];
+//------------------------- Activar WIFI ESP8266 -----------------------
+// #include <ESP8266WiFi.h>
 
 String DatoHex;
 

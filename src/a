@@ -20,12 +20,12 @@ const unsigned long postingInterval = 20L * 1000L;
 unsigned int dataFieldOne = 1;                       // Calpo para escribir el estado de la Temperatura
 unsigned int dataFieldTwo = 2;                       // Campo para escribir el estado del Bombillo
 unsigned int dataFieldThree = 3;                     // Campo para escribir el estado del ventilador
-unsigned int dataFieldFour = 4;                      // FCampo para enviar el tiempo de medición millis()
+unsigned int dataFieldFour = 4;                      // FCampo para enviar el tiempo de medición
 //*************** Fin Conección ThinkSpeak *******
 
 
-char ssid[] = "Piso 1";//"TP-Link_B520";
-char password[] = "9003407381"; //"67097135";
+char ssid[] = "Bravo";//"TP-Link_B520";
+char password[] = "12345678"; //"67097135";
 WiFiClient client;              //Cliente Wifi para ThingSpeak
 //-------------------------- Fin Configuración WIFI ESP8266 --------------
 
@@ -50,7 +50,7 @@ long fotoceldafuncion()
 }
 
 //Funcion para obtener los valores de los sensores
-/*void LeerSensores(void)
+void LeerSensores(void)
 {
    //leer el sensor de luz
    //luminosidad = analogRead(sensorluzpin); 
@@ -65,9 +65,9 @@ long fotoceldafuncion()
    temperatura = analogRead(temperaturapin); //Obtencion del valor leido
    float resistance=(float)(1023-temperatura)*10000/temperatura; //Obtencion del valor de la resistencia
    temperatura=1/(log(resistance/10000)/B+1/298.15)-273.15; //Calculo de la temperatura
-}*/
+}
 
-/*void ImprimirValoresSensores(void)
+void ImprimirValoresSensores(void)
 {
  //Imprimir los valores sensados
   Serial.println("========================================");
@@ -95,9 +95,9 @@ long fotoceldafuncion()
     Serial.println("Ventilador Apagado");
  else
     Serial.println("Ventilador Encendido");
-}*/
+}
 
-/*boolean UmbraldeTemperatura(float umbral)
+boolean UmbraldeTemperatura(float umbral)
 {
   if(temperatura > umbral){
     digitalWrite(ventiladorpin, HIGH); 
@@ -109,9 +109,9 @@ long fotoceldafuncion()
     delay(10); 
     return false;
   } 
-}*/
+}
 
-/*boolean UmbraldeLuz(float umbral)
+boolean UmbraldeLuz(float umbral)
 {
   //Envia una señal que activa o desactiva el relay
   if(luminosidad < umbral){
@@ -196,13 +196,12 @@ void loop()
   // Only update if posting time is exceeded
   if (millis() - lastUpdateTime >=  postingInterval) {
     lastUpdateTime = millis();
-    //LeerSensores();
-    //ImprimirValoresSensores();
+    LeerSensores();
+    ImprimirValoresSensores();
 
     //Verificar los umbrales
-    estadoventilador = 5;//UmbraldeTemperatura(umbralTemperatura);
-    estadobombillo = 6;//UmbraldeLuz(umbralLuz);
-    luminosidad = 7;
+    estadoventilador = UmbraldeTemperatura(umbralTemperatura);
+    estadobombillo = UmbraldeLuz(umbralLuz);
 
     //Enviar los Datos a ThinkSpeak
     write2TSData( channelID , dataFieldOne , temperatura , 
