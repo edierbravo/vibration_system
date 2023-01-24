@@ -38,8 +38,10 @@
 
 ////////////// Variables globales RFID /////////////////////
 
-//------------------------- Activar WIFI ESP8266 -----------------------
-// #include <ESP8266WiFi.h>
+MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
+MFRC522::MIFARE_Key key;
+// Init array that will store new NUID
+byte nuidPICC[4];
 
 String DatoHex;
 
@@ -82,7 +84,7 @@ int verifivarRfid( String UserRegisters[], String Dato){
   {
     if(UserReg[i] == DatoHex)
     {
-      String S1 = "   USUARIO "+String(i+1)+" - PUEDE INGRESAR"; 
+      String S1 = "USUARIO "+String(i)+" - PUEDE INGRESAR"; 
       Serial.println(S1);
       return a = 1;    
     }else{
@@ -101,7 +103,7 @@ int LeerVibracion(int vb, int Avb){
   int AnaV = Ana_out;
   int AnaV1 = (Ana_out- 4095)*-1;
   Serial.print(AnaV1);
-  Serial.print("   -   Digital :");
+  Serial.print("  -   Digital :");
   Serial.println(Dig_out);
   return AnaV1;
 }
@@ -130,8 +132,6 @@ void setup()
   pinMode(rfidon, OUTPUT);
   pinMode(rfidoff, OUTPUT);
   pinMode(Buzer,OUTPUT);
-  digitalWrite(rfidon, LOW);
-  digitalWrite(rfidoff, LOW);
   
 }
 
@@ -200,5 +200,6 @@ void loop() {
   rfid.PICC_HaltA();
   // Stop encryption on PCD
   rfid.PCD_StopCrypto1();
+
   delay(2000);
 }
