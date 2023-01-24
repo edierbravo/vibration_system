@@ -1,12 +1,17 @@
 
-///////////////////// vibrador /////////////////
-int vb=34; // pin digital
-int Avb=4; // pin analogico
-int Dig_out = 0; //variable
-int Ana_out = 0; // variable
+#include <Arduino.h>
+#include <SPI.h>
+#include <MFRC522.h>
 
-int B = 1;
-///////////////////// RFID //////////////////
+#if defined(ESP32)
+  #define SS_PIN 5
+  #define RST_PIN 22
+#elif defined(ESP8266)
+  #define SS_PIN D8
+  #define RST_PIN D0
+#endif
+
+///////////////////// Informacion RFID //////////////////
 // LISTA DE REPRODUCCION - ESP32 - ESP8266
 // https://www.youtube.com/playlist?list=PLZHVfZzF2DYID9jGK8EpcMni-U2CSTrw3
 
@@ -31,31 +36,31 @@ int B = 1;
   SS/SDA (Slave select) <-> D8
 */
 
-#include <Arduino.h>
-#include <SPI.h>
-#include <MFRC522.h>
-
-#if defined(ESP32)
-  #define SS_PIN 5
-  #define RST_PIN 22
-#elif defined(ESP8266)
-  #define SS_PIN D8
-  #define RST_PIN D0
-#endif
+////////////// Variables globales RFID /////////////////////
 
 MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
 MFRC522::MIFARE_Key key;
 // Init array that will store new NUID
 byte nuidPICC[4];
 
-//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 String DatoHex;
-/*const String UserReg_1 = "F9049E2E";
-const String UserReg_2 = "B33786A3";
-const String UserReg_3 = "7762C83B";*/
 
 String UserReg[] = {"F9049E2E", "B33786A3", "7762C83B"};
-//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+int Resultado = 0; //autorizado o no RFID
+
+///////////////////// Variables globales vibrador /////////////////
+int vb=12; // pin digital 12
+int Avb=32; // pin analogico 32
+int rfidon=26; // 26 pin
+int rfidoff=13; // 13 pin
+int Dig_out = 0; //variable
+int Ana_out = 0; // variable
+int B = 1; //boleado 1
+int Buzer=14; // led verificacion 14
+
+////////////////// FUNCIONES /////////////////
+
 String printHex(byte *buffer, byte bufferSize)
 {  
    String DatoHexAux = "";
@@ -77,11 +82,9 @@ int verifivarRfid( String UserRegisters[], String Dato){
   int a = 2;
   for (int i = 0; i < sizeof(UserRegisters) ; i++)
   {
-    Serial.println(sizeof(UserRegisters));
-    Serial.println(UserReg[i]);
     if(UserReg[i] == DatoHex)
     {
-      String S1 = "USUARIO "+String(i)+" - PUEDE INGRESAR"; 
+      String S1 = "   USUARIO "+String(i+1)+" - PUEDE INGRESAR"; 
       Serial.println(S1);
       return a = 1;    
     }else{
@@ -96,21 +99,19 @@ int verifivarRfid( String UserRegisters[], String Dato){
 int LeerVibracion(int vb, int Avb){
   Dig_out = digitalRead(vb);
   Ana_out = analogRead(Avb);
-  Serial.print("Anaolog : ");
-  int AnaV = Ana_out;//(Ana_out- 4095)*-1;
-  Serial.println(AnaV);
+  Serial.print("     Anaolog : ");
+  int AnaV = Ana_out;
   int AnaV1 = (Ana_out- 4095)*-1;
-  Serial.println(AnaV1);
-  Serial.print("          Digital :");
+  Serial.print(AnaV1);
+  Serial.print("   -   Digital :");
   Serial.println(Dig_out);
   return AnaV1;
 }
 
-int led=2; // pin Led de verificacion
+
 void setup() 
 {
-
-  ///////////////////// rfid/////////////////
+  ///////////////////// setup RFID/////////////////
    Serial.begin(9600);
    SPI.begin(); // Init SPI bus
    rfid.PCD_Init(); // Init MFRC522
@@ -125,97 +126,81 @@ void setup()
    Serial.println();
    Serial.println("Iniciando el Programa");
 
-   ///////////////////// vibrador/////////////////
+   ///////////////////// stupvibrador/////////////////
   pinMode(vb, INPUT);
   pinMode(Avb, INPUT);
-  pinMode(led,OUTPUT);
+  pinMode(rfidon, OUTPUT);
+  pinMode(rfidoff, OUTPUT);
+  pinMode(Buzer,OUTPUT);
+  digitalWrite(rfidon, LOW);
+  digitalWrite(rfidoff, LOW);
   
 }
 
-void loop() 
-{
-  ///////////////////// vibrador/////////////////
-  /*Dig_out = digitalRead(vb);
-  Ana_out = analogRead(Avb);
-  Serial.print("Anaolog : ");
-  int AnaV = Ana_out;//(Ana_out- 4095)*-1;
-  Serial.println(AnaV);
-  int AnaV1 = (Ana_out- 4095)*-1;
-  Serial.println(AnaV1);
-  Serial.print("          Digital :");
-  Serial.println(Dig_out);*/
-  
+void loop() {
+  //////// Leer sensor de vibracion
   int vibracion = LeerVibracion(vb, Avb);
   if (vibracion > 1000 and B==1){
-    digitalWrite(led,HIGH);
+    digitalWrite(Buzer,HIGH);
     B = 0;
     delay(500);
   }else if (vibracion > 1000 and B==0){
-    digitalWrite(led,LOW);
+    digitalWrite(Buzer,LOW);
     B = 1;
     delay(500);
   }
   
   delay(100);
 
-  /////////////////// rfid /////////////////
+  /////////////////// Leer RFID 
   // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
-     if ( ! rfid.PICC_IsNewCardPresent()){return;}
-     
-     // Verify if the NUID has been readed
-     if ( ! rfid.PICC_ReadCardSerial()){return;}
-     
-     Serial.print(F("PICC type: "));
-     MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
-     Serial.println(rfid.PICC_GetTypeName(piccType));
-     // Check is the PICC of Classic MIFARE type
-     if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI && piccType != MFRC522::PICC_TYPE_MIFARE_1K && piccType != MFRC522::PICC_TYPE_MIFARE_4K)
-     {
-       Serial.println("Su Tarjeta no es del tipo MIFARE Classic.");
-       return;
-     }
-     
-     if (rfid.uid.uidByte[0] != nuidPICC[0] || rfid.uid.uidByte[1] != nuidPICC[1] || rfid.uid.uidByte[2] != nuidPICC[2] || rfid.uid.uidByte[3] != nuidPICC[3] )
-     {
-       Serial.println("Se ha detectado una nueva tarjeta.");
-       
-       // Store NUID into nuidPICC array
-       for (byte i = 0; i < 4; i++) {nuidPICC[i] = rfid.uid.uidByte[i];}
+  if ( ! rfid.PICC_IsNewCardPresent()){return;}
+  
+  // Verify if the NUID has been readed
+  if ( ! rfid.PICC_ReadCardSerial()){return;}
+  
+  Serial.print(F("PICC type: "));
+  MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
+  Serial.println(rfid.PICC_GetTypeName(piccType));
+  // Check is the PICC of Classic MIFARE type
+  if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI && piccType != MFRC522::PICC_TYPE_MIFARE_1K && piccType != MFRC522::PICC_TYPE_MIFARE_4K)
+  {
+    Serial.println("Su Tarjeta no es del tipo MIFARE Classic.");
+    return;
+  }
+  
+  if (rfid.uid.uidByte[0] != nuidPICC[0] || rfid.uid.uidByte[1] != nuidPICC[1] || rfid.uid.uidByte[2] != nuidPICC[2] || rfid.uid.uidByte[3] != nuidPICC[3] )
+  {
+    Serial.println("Se ha detectado una nueva tarjeta.");
     
-       DatoHex = printHex(rfid.uid.uidByte, rfid.uid.size);
-       Serial.print("Codigo Tarjeta: "); Serial.println(DatoHex);
+    // Store NUID into nuidPICC array
+    for (byte i = 0; i < 4; i++) {nuidPICC[i] = rfid.uid.uidByte[i];}
 
-      int Resultado = verifivarRfid(UserReg, DatoHex);
-      Serial.println(Resultado);
-      ///
-       /*if(UserReg_1 == DatoHex)
-       {
-        Serial.println("USUARIO 1 - PUEDE INGRESAR");     
-       }
-       else if(UserReg_2 == DatoHex)
-       {
-        Serial.println("USUARIO 2 - PUEDE INGRESAR");
-       }
-       else if(UserReg_3 == DatoHex)
-       {
-        Serial.println("USUARIO 3 - PUEDE INGRESAR");
-       }
-       else
-       {
-        Serial.println("NO ESTA REGISTRADO - PROHIBIDO EL INGRESO");
-       }  
-       Serial.println();*/
-       ///
-     }
-     else 
-     {
-      Serial.println("Tarjeta leida previamente");
-      int Resultado = verifivarRfid(UserReg, DatoHex);
-      Serial.println(Resultado);
-     }
-     // Halt PICC
-     rfid.PICC_HaltA();
-     // Stop encryption on PCD
-     rfid.PCD_StopCrypto1();
+    DatoHex = printHex(rfid.uid.uidByte, rfid.uid.size);
+    Serial.print("Codigo Tarjeta: "); Serial.println(DatoHex);
+
+  Resultado = verifivarRfid(UserReg, DatoHex);
+  Serial.println(Resultado);
+  
+  } else {
+    Serial.println("Tarjeta leida previamente");
+    Resultado = verifivarRfid(UserReg, DatoHex);
+    Serial.println(Resultado);
+  }
+
+  if (Resultado == 1){
+    digitalWrite(rfidon, HIGH);
     delay(1000);
+    digitalWrite(rfidon, LOW);
+  }else{
+    digitalWrite(rfidoff, HIGH);
+    delay(1000);
+    digitalWrite(rfidoff, LOW);
+  }
+  
+  // Halt PICC
+  rfid.PICC_HaltA();
+  // Stop encryption on PCD
+  rfid.PCD_StopCrypto1();
+  delay(2000);
 }
