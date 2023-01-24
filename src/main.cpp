@@ -7,6 +7,17 @@
 //*************** Coneción a ThinkSpeak *********
 #include <ThingSpeak.h>
 
+/////////// Información del Canal y Campos de ThingSpeak //////////////////
+char thingSpeakAddress[] = "api.thingspeak.com";
+unsigned long channelID = 2014575;
+char* readAPIKey = (char*)"MCVF18UY83B6ODE9"; //"70GGTLNT0EMFP0WO";
+char* writeAPIKey = (char*)"CE9J7FJ9UB7CANQH"; //"7ZBZ9LU15LQRYKRF";
+const unsigned long postingInterval = 20L * 60L;
+unsigned int dataFieldOne = 1;                       // Calpo para escribir el estado de la Temperatura
+unsigned int dataFieldTwo = 2;                       // Campo para escribir el estado del Bombillo
+unsigned int dataFieldThree = 3;                     // Campo para escribir el estado del ventilador
+
+// ************ Pines RFID **************+
 #if defined(ESP32)
   #define SS_PIN 5
   #define RST_PIN 22
@@ -68,7 +79,7 @@ char ssid[] = "Piso 1";//"TP-Link_B520";
 char password[] = "9003407381"; //"67097135";
 WiFiClient client;              //Cliente Wifi para ThingSpea
 
-////////////////// FUNCIONES /////////////////
+//////////////////************ FUNCIONES ***************/////////////////
 
 String printHex(byte *buffer, byte bufferSize)
 {  
@@ -117,7 +128,30 @@ int LeerVibracion(int vb, int Avb){
   return AnaV1;
 }
 
+// usa esta funcion siu solo quieres ecribir un solo campo
+int writeTSData( long TSChannel, unsigned int TSField, float data ){
+  int  writeSuccess = ThingSpeak.writeField( TSChannel, TSField, data, writeAPIKey ); // Write the data to the channel
+  if ( writeSuccess ){
+    //lcd.setCursor(0, 1);
+    //lcd.print("Send ThinkSpeak");
+    Serial.println( String(data) + " written to Thingspeak." );
+    }
+    
+    return writeSuccess;
+}
 
+//Usa esta funcion para escribir multiples campos
+int write2TSData( long TSChannel, unsigned int TSField1, 
+                  float field1Data,unsigned int TSField2, long field2Data,
+                  unsigned int TSField3, long field3Data ){
+
+  ThingSpeak.setField( TSField1, field1Data );
+  ThingSpeak.setField( TSField2, field2Data );
+  ThingSpeak.setField( TSField3,  field3Data );
+
+  int printSuccess = ThingSpeak.writeFields( TSChannel, writeAPIKey );
+  return printSuccess;
+}
 void setup() 
 {
   //Abrir el puerto de lectura en el PC para mensajes
@@ -135,7 +169,7 @@ void setup()
   Serial.println("");
   Serial.println("WiFi conectada");
   Serial.println(WiFi.localIP());
-
+  
   ///////////////////// setup RFID /////////////////
    SPI.begin(); // Init SPI bus
    rfid.PCD_Init(); // Init MFRC522
@@ -156,74 +190,85 @@ void setup()
   pinMode(rfidon, OUTPUT);
   pinMode(rfidoff, OUTPUT);
   pinMode(Buzer,OUTPUT);
-  
+
+  ///////////////// Conectar Cliente ThinkSpeak /////////////7
+  ThingSpeak.begin( client ); 
 }
 
+//metodo repetitivo
+unsigned long lastConnectionTime = 0;
+long lastUpdateTime = 0;
+
 void loop() {
-  //////// Leer sensor de vibracion
-  int vibracion = LeerVibracion(vb, Avb);
-  if (vibracion > 1000 and B==1){
-    digitalWrite(Buzer,HIGH);
-    B = 0;
-    delay(500);
-  }else if (vibracion > 1000 and B==0){
-    digitalWrite(Buzer,LOW);
-    B = 1;
-    delay(500);
-  }
-  
-  delay(100);
+  // Only update if posting time is exceeded
+  if (millis() - lastUpdateTime >=  postingInterval) {
+    lastUpdateTime = millis();
+    //////// Leer sensor de vibracion
+    int vibracion = LeerVibracion(vb, Avb);
+    if (vibracion > 1000 and B==1){
+      digitalWrite(Buzer,HIGH);
+      B = 0;
+      delay(500);
+    }else if (vibracion > 1000 and B==0){
+      digitalWrite(Buzer,LOW);
+      B = 1;
+      delay(500);
+    }
 
-  /////////////////// Leer RFID 
-  // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
-  if ( ! rfid.PICC_IsNewCardPresent()){return;}
-  
-  // Verify if the NUID has been readed
-  if ( ! rfid.PICC_ReadCardSerial()){return;}
-  
-  Serial.print(F("PICC type: "));
-  MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
-  Serial.println(rfid.PICC_GetTypeName(piccType));
-  // Check is the PICC of Classic MIFARE type
-  if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI && piccType != MFRC522::PICC_TYPE_MIFARE_1K && piccType != MFRC522::PICC_TYPE_MIFARE_4K)
-  {
-    Serial.println("Su Tarjeta no es del tipo MIFARE Classic.");
-    return;
-  }
-  
-  if (rfid.uid.uidByte[0] != nuidPICC[0] || rfid.uid.uidByte[1] != nuidPICC[1] || rfid.uid.uidByte[2] != nuidPICC[2] || rfid.uid.uidByte[3] != nuidPICC[3] )
-  {
-    Serial.println("Se ha detectado una nueva tarjeta.");
+    /////////////////// Leer RFID 
+    // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
+    if ( ! rfid.PICC_IsNewCardPresent()){return;}
     
-    // Store NUID into nuidPICC array
-    for (byte i = 0; i < 4; i++) {nuidPICC[i] = rfid.uid.uidByte[i];}
+    // Verify if the NUID has been readed
+    if ( ! rfid.PICC_ReadCardSerial()){return;}
+    
+    Serial.print(F("PICC type: "));
+    MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
+    Serial.println(rfid.PICC_GetTypeName(piccType));
+    // Check is the PICC of Classic MIFARE type
+    if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI && piccType != MFRC522::PICC_TYPE_MIFARE_1K && piccType != MFRC522::PICC_TYPE_MIFARE_4K)
+    {
+      Serial.println("Su Tarjeta no es del tipo MIFARE Classic.");
+      return;
+    }
+    
+    if (rfid.uid.uidByte[0] != nuidPICC[0] || rfid.uid.uidByte[1] != nuidPICC[1] || rfid.uid.uidByte[2] != nuidPICC[2] || rfid.uid.uidByte[3] != nuidPICC[3] )
+    {
+      Serial.println("Se ha detectado una nueva tarjeta.");
+      
+      // Store NUID into nuidPICC array
+      for (byte i = 0; i < 4; i++) {nuidPICC[i] = rfid.uid.uidByte[i];}
 
-    DatoHex = printHex(rfid.uid.uidByte, rfid.uid.size);
-    Serial.print("Codigo Tarjeta: "); Serial.println(DatoHex);
+      DatoHex = printHex(rfid.uid.uidByte, rfid.uid.size);
+      Serial.print("Codigo Tarjeta: "); Serial.println(DatoHex);
 
-  Resultado = verifivarRfid(UserReg, DatoHex);
-  Serial.println(Resultado);
-  
-  } else {
-    Serial.println("Tarjeta leida previamente");
-    Resultado = verifivarRfid(UserReg, DatoHex);
-    Serial.println(Resultado);
+      Resultado = verifivarRfid(UserReg, DatoHex);
+      Serial.println(Resultado);
+    
+    } else {
+      Serial.println("Tarjeta leida previamente");
+      Resultado = verifivarRfid(UserReg, DatoHex);
+      Serial.println(Resultado);
+    }
+
+    if (Resultado == 1){
+      digitalWrite(rfidon, HIGH);
+      delay(1000);
+      digitalWrite(rfidon, LOW);
+    }else{
+      digitalWrite(rfidoff, HIGH);
+      delay(1000);
+      digitalWrite(rfidoff, LOW);
+    }
+    
+    // Halt PICC
+    rfid.PICC_HaltA();
+    // Stop encryption on PCD
+    rfid.PCD_StopCrypto1();
+
+    write2TSData( channelID , 
+                  dataFieldOne , vibracion, 
+                  dataFieldTwo , Resultado,
+                  dataFieldThree , millis());     
   }
-
-  if (Resultado == 1){
-    digitalWrite(rfidon, HIGH);
-    delay(1000);
-    digitalWrite(rfidon, LOW);
-  }else{
-    digitalWrite(rfidoff, HIGH);
-    delay(1000);
-    digitalWrite(rfidoff, LOW);
-  }
-  
-  // Halt PICC
-  rfid.PICC_HaltA();
-  // Stop encryption on PCD
-  rfid.PCD_StopCrypto1();
-
-  delay(2000);
 }
