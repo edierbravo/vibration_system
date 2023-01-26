@@ -31,17 +31,17 @@
                 <a href="../index.php"><img id="imagen_logo" src="../images/logo.png" alt="Error al cargar la imagen"></a>
             </div>
             <div class="contenedor_frase">
-                <span>Controla y monitoriza tu biodigestor al alcance de unos pocos clicks</span>
+                <span>Monitorea tu Hogar al alcance de unos pocos clicks</span>
             </div>
             <div class="contenedor_botones">
+                
                 <div class="contenedor_botton_inicio">
-
                 <a href="../index.php"><button type="" class="btn-inicio-sesion"> Menu Principal</button></a>
-
                 </div>
+                <!--
                 <div class="contenedor_botton_registro">
                     <a href="../pages/form_register.php"><button type="" class="btn-inicio-sesion"> Registrarse </button></a>
-                </div>
+                </div>-->
 
             </div>
         </div>
@@ -54,13 +54,13 @@
             <ul>
 
                 <a href="../index.php"><li class="btn-inicio-go_home">Menu Principal</li></a>
-                <a href="suscription.php"><li>Suscripciones <i class="fa fa-angle-down"></i></a>
+                <!--<a href="suscription.php"><li>Suscripciones <i class="fa fa-angle-down"></i></a>
                     <ul>
                         <a href="compras.php?suscp=Prem"><li> Premiun</li></a>
                         <a href="compras.php?suscp=Basic"><li> Basico</li></a>
                     </ul>
                 </li>
-                <a href="quienes_somos.php"><li class="btn-inicio-go_catalogo">¿Quienes somos?</li></a>
+                <a href="quienes_somos.php"><li class="btn-inicio-go_catalogo">¿Quienes somos?</li></a>-->
 
             </ul>
         </div>

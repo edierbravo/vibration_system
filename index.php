@@ -34,7 +34,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;1,400;1,500;1,900&family=Lobster&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/b50f20f4b1.js" crossorigin="anonymous"></script>
     <!-- Estilos del carousel -->
-    <title>Automatic Life Gas</title>
+    <title>VibraciónSistema</title>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -51,15 +51,15 @@
             ?>
 
                 <div class="contenedor_frase">
-                    <span>Controla y monitoriza tu biodigestor al alcance de unos pocos clicks </span>
+                    <span>Monitorea tu Hogar al alcance de unos pocos clicks</span>
                 </div>
                 <div class="contenedor_botones">
                     <div class="contenedor_botton_inicio">
                         <a href="pages/inicio_sesion.php"><button type="" class="btn-inicio-sesion">Inicio de Sesion</button></a>
                     </div>
-                    <div class="contenedor_botton_registro">
+                    <!--<div class="contenedor_botton_registro">
                         <a href="pages/form_register.php"><button type="" class="btn-inicio-sesion">Registrarse</button></a>
-                    </div>
+                    </div>-->
                 </div>
             <?php
                 }
@@ -138,8 +138,9 @@
                 </div>
 
                 <!-- ITEMS -->
+                <!--
                 <div id="menu-items">
-
+                    
                     <div class="item">
                         <a href="pages/client_menu.php">
                             <div class="icon"><img src="images/home.png" alt=""></div>
@@ -147,8 +148,8 @@
 
                         </a>
                     </div>
-
-                        <!-- SEPARADOR -->
+                    
+                        
                         <div class="item separator">
                         </div>
 
@@ -159,7 +160,7 @@
 
                         </a>
                     </div>
-                        <!-- SEPARADOR -->
+                        
                         <div class="item separator">
                         </div>
 
@@ -171,7 +172,7 @@
                         </a>
                     </div>
 
-                        <!-- SEPARADOR -->
+                        
                         <div class="item separator">
                         </div>
 
@@ -182,7 +183,7 @@
 
                         </a>
                     </div>
-                    <!-- SEPARADOR -->
+                    
                         <div class="item separator">
                         </div>
 
@@ -193,9 +194,11 @@
 
                         </a>
                     </div>
+               
 
 
                 </div>
+                 -->
 
                 <!--
                     =================================
@@ -236,6 +239,8 @@
                 </div>
 
                 <!-- ITEMS -->
+
+                <!--
                 <div id="menu-items">
 
                     <div class="item">
@@ -245,8 +250,9 @@
 
                         </a>
                     </div>
-
-                        <!-- SEPARADOR -->
+                    
+                    
+                        
                         <div class="item separator">
                         </div>
 
@@ -258,7 +264,7 @@
                         </a>
                     </div>
 
-                        <!-- SEPARADOR -->
+                        
                         <div class="item separator">
                         </div>
 
@@ -269,7 +275,7 @@
 
                         </a>
                     </div>
-                        <!-- SEPARADOR -->
+                        
                         <div class="item separator">
                         </div>
 
@@ -281,7 +287,7 @@
                         </a>
                     </div>
 
-                        <!-- SEPARADOR -->
+                        
                         <div class="item separator">
                         </div>
 
@@ -293,7 +299,7 @@
                         </a>
                     </div>
 
-                        <!-- SEPARADOR -->
+                       
                         <div class="item separator">
                         </div>
 
@@ -304,7 +310,7 @@
 
                         </a>
                     </div>
-
+                    -->
 
                 </div>
 
@@ -330,6 +336,7 @@
         <div class="contenedor_listas">
             <ul>
                 <a href="index.php"><li class="btn-inicio-go_home">Menu Principal</li></a>
+                <!--
                 <a href="pages/suscription.php"><li>Suscripciones</a><i class="fa fa-angle-down"></i>
                     <ul>
                         <a href="pages/compras.php?suscp=Prem"><li> Premiun</li></a>
@@ -337,7 +344,7 @@
                     </ul>
                 </li>
                 <a href="pages/quienes_somos.php"><li class="btn-inicio-go_catalogo">¿Quienes somos?</li></a>
-
+                -->
                 <?php
                     if($autentication == 'Cliente'){
 
@@ -349,7 +356,9 @@
 
                     elseif($autentication == 'Admin'){
                 ?>
-                    <a href="pages/admin_menu.php"><li class="btn-dashboard">Menu del Usuario</li></a>
+                
+                   <!-- <a href="pages/admin_menu.php"><li class="btn-dashboard">Menu del Usuario</li></a>-->
+                
                 <?php
                     }
 

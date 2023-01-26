@@ -47,6 +47,9 @@ span {
   margin-left: 4%;
   width: 15%;
   height: 145px;
+  display: flex;
+  align-items: center;
+  
 }
 
 .contenedor_botton_inicio {
