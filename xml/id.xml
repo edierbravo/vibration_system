@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<objetoIoT id="192.168.127.15">
+<objetoIoT id="192.168.1.112">
    <gateway>
       <propiedades>
-         <nombre>ESP8266</nombre>
-         <modelo>nodemcu 12E</modelo>
-         <fabricante>EspressIf</fabricante>
+         <nombre>esp32dev</nombre>
+         <modelo>ESP32-S0WD</modelo>
+         <fabricante>Espressif Systems y TCMS</fabricante>
       </propiedades>
       <recursos>
          <recursoIoT>
             <tipo>sensor</tipo>
-            <senal>analoga</senal>
-            <voltaje rangoinicial="3" rangofinal="30" />
+            <senal>analogico</senal>
+            <<voltaje rangoinicial="4" rangofinal="8" />
+         </recursoIoT>
+         <recursoIoT>
+            <tipo>sensor</tipo>
+            <senal>digital</senal>
+            <voltaje rangoinicial="2.5" rangofinal="3.3" />
          </recursoIoT>
          <recursoIoT>
             <tipo>actuador</tipo>
             <senal>digital</senal>
-            <voltaje rangoinicial="0" rangofinal="5" />
+            <voltaje rangoinicial="4" rangofinal="8" />
          </recursoIoT>
       </recursos>
    </gateway>

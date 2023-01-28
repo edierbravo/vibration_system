@@ -12,11 +12,12 @@ char thingSpeakAddress[] = "api.thingspeak.com";
 unsigned long channelID = 2014575;
 char* readAPIKey = (char*)"MCVF18UY83B6ODE9"; //"70GGTLNT0EMFP0WO";
 char* writeAPIKey = (char*)"CE9J7FJ9UB7CANQH"; //"7ZBZ9LU15LQRYKRF";
-const unsigned long postingInterval = 20L * 60L;
-unsigned int dataFieldOne = 1;                       // Calpo para escribir el estado de la Temperatura
-unsigned int dataFieldTwo = 2;                       // Campo para escribir el estado del Bombillo
-unsigned int dataFieldThree = 3;                     // Campo para escribir el estado del ventilador
-
+const unsigned long postingInterval = 20L * 1000L;
+const unsigned long postingIntAlarma = 20L * 3500L;
+unsigned int dataFieldOne = 1;                       
+unsigned int dataFieldTwo = 2;                       
+unsigned int dataFieldThree = 3;                     
+unsigned int dataFieldFour = 4; 
 // ************ Pines RFID **************+
 #if defined(ESP32)
   #define SS_PIN 5
@@ -75,9 +76,9 @@ int B = 1; //boleado 1
 int Buzer=14; // led verificacion 14
 
 /////////////////// Configuracion WIFI ///////////////////
-char ssid[] = "Piso 1";//"TP-Link_B520";
-char password[] = "9003407381"; //"67097135";
-WiFiClient client;              //Cliente Wifi para ThingSpea
+char ssid[] = "EDWARD";//"FLIA MUCE";//"Bravo";//"Piso 1";//"TP-Link_B520";
+char password[] = "EDWARD12";//"4fliamuce2001";//"9003407381"; //"67097135";
+WiFiClient client;              //Cliente Wifi para ThingSpeaK
 
 //////////////////************ FUNCIONES ***************/////////////////
 
@@ -125,6 +126,8 @@ int LeerVibracion(int vb, int Avb){
   Serial.print(AnaV1);
   Serial.print("  -   Digital :");
   Serial.println(Dig_out);
+
+
   return AnaV1;
 }
 
@@ -143,19 +146,23 @@ int writeTSData( long TSChannel, unsigned int TSField, float data ){
 //Usa esta funcion para escribir multiples campos
 int write2TSData( long TSChannel, unsigned int TSField1, 
                   float field1Data,unsigned int TSField2, long field2Data,
-                  unsigned int TSField3, long field3Data ){
+                  unsigned int TSField3, long field3Data,
+                  unsigned int TSField4, 
+                  int field4Data ){
 
   ThingSpeak.setField( TSField1, field1Data );
   ThingSpeak.setField( TSField2, field2Data );
   ThingSpeak.setField( TSField3,  field3Data );
+  ThingSpeak.setField( TSField4,  field4Data );
 
   int printSuccess = ThingSpeak.writeFields( TSChannel, writeAPIKey );
+  Serial.println("Subio datos");
   return printSuccess;
 }
 void setup() 
 {
   //Abrir el puerto de lectura en el PC para mensajes
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   /////////////////// Conección WIFI /////////////////
   Serial.println("Conectandose a la WIFI!");
@@ -198,42 +205,78 @@ void setup()
 //metodo repetitivo
 unsigned long lastConnectionTime = 0;
 long lastUpdateTime = 0;
+int vectorAlarma[] = {0,0,0,0,0,0};
+int indice = 0;
+unsigned long lastUpdateTimeAlarma = 0;
+int alarma = 0;
+int suma = 0;
 
 void loop() {
   // Only update if posting time is exceeded
   if (millis() - lastUpdateTime >=  postingInterval) {
     lastUpdateTime = millis();
-    //////// Leer sensor de vibracion
-    int vibracion = LeerVibracion(vb, Avb);
-    if (vibracion > 1000 and B==1){
-      digitalWrite(Buzer,HIGH);
-      B = 0;
-      delay(500);
-    }else if (vibracion > 1000 and B==0){
-      digitalWrite(Buzer,LOW);
-      B = 1;
-      delay(500);
-    }
+    
 
     /////////////////// Leer RFID 
     // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
-    if ( ! rfid.PICC_IsNewCardPresent()){return;}
+    if ( ! rfid.PICC_IsNewCardPresent()){
+      Serial.println("no hay ninguna tarjeta nueva presente en el sensor");
+
+      int Resultado = 2;
+      int vibracion = LeerVibracion(vb, Avb);
+
+    // Logica buzer
+    if (vibracion > 1000){
+      vectorAlarma[indice] = 1;
+      indice = indice+1;
+    }else{
+      vectorAlarma[indice] = 0;
+      indice = indice+1;
+    }
+
+    if (millis() - lastUpdateTimeAlarma >=  postingIntAlarma) {
+      suma = vectorAlarma[0]+vectorAlarma[1]+vectorAlarma[2]+vectorAlarma[3]+vectorAlarma[4];
+
+      if(suma >= 2){
+        digitalWrite(Buzer,HIGH);
+        alarma = 1;
+        Serial.println("Se activo la alarma");
+      }
+
+      int vectorAlarma[] = {0,0,0,0,0,0};
+      indice = 0;
+      lastUpdateTimeAlarma = millis();
+    }
+    // Fin logica Buzer
+      
+      // Halt PICC
+      rfid.PICC_HaltA();
+      // Stop encryption on PCD
+      rfid.PCD_StopCrypto1();
+
+      write2TSData( channelID , 
+                    dataFieldOne , vibracion, 
+                    dataFieldTwo , Resultado,
+                    dataFieldThree , millis(),
+                    dataFieldFour , alarma);
+      
+      return;}
     
     // Verify if the NUID has been readed
-    if ( ! rfid.PICC_ReadCardSerial()){return;}
+    if ( ! rfid.PICC_ReadCardSerial()){
+      Serial.println("Verificar si se ha leído la NUID");
+      return;}
     
     Serial.print(F("PICC type: "));
     MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
     Serial.println(rfid.PICC_GetTypeName(piccType));
     // Check is the PICC of Classic MIFARE type
-    if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI && piccType != MFRC522::PICC_TYPE_MIFARE_1K && piccType != MFRC522::PICC_TYPE_MIFARE_4K)
-    {
+    if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI && piccType != MFRC522::PICC_TYPE_MIFARE_1K && piccType != MFRC522::PICC_TYPE_MIFARE_4K){
       Serial.println("Su Tarjeta no es del tipo MIFARE Classic.");
       return;
     }
     
-    if (rfid.uid.uidByte[0] != nuidPICC[0] || rfid.uid.uidByte[1] != nuidPICC[1] || rfid.uid.uidByte[2] != nuidPICC[2] || rfid.uid.uidByte[3] != nuidPICC[3] )
-    {
+    if (rfid.uid.uidByte[0] != nuidPICC[0] || rfid.uid.uidByte[1] != nuidPICC[1] || rfid.uid.uidByte[2] != nuidPICC[2] || rfid.uid.uidByte[3] != nuidPICC[3] ){
       Serial.println("Se ha detectado una nueva tarjeta.");
       
       // Store NUID into nuidPICC array
@@ -243,7 +286,7 @@ void loop() {
       Serial.print("Codigo Tarjeta: "); Serial.println(DatoHex);
 
       Resultado = verifivarRfid(UserReg, DatoHex);
-      Serial.println(Resultado);
+      //Serial.println(Resultado);
     
     } else {
       Serial.println("Tarjeta leida previamente");
@@ -252,6 +295,14 @@ void loop() {
     }
 
     if (Resultado == 1){
+      if(alarma == 1){
+        digitalWrite(Buzer,LOW);
+        // Se reinician las variables de la alarma
+        alarma = 0;
+        int vectorAlarma[] = {0,0,0,0,0,0};
+        indice = 0;
+        lastUpdateTimeAlarma = millis();
+      }
       digitalWrite(rfidon, HIGH);
       delay(1000);
       digitalWrite(rfidon, LOW);
@@ -260,7 +311,34 @@ void loop() {
       delay(1000);
       digitalWrite(rfidoff, LOW);
     }
-    
+
+    //////// Leer sensor de vibracion
+    int vibracion = LeerVibracion(vb, Avb);
+
+    // Logica buzer
+    if (vibracion > 1000){
+      vectorAlarma[indice] = 1;
+      indice = indice+1;
+    }else{
+      vectorAlarma[indice] = 0;
+      indice = indice+1;
+    }
+
+    if (millis() - lastUpdateTimeAlarma >=  postingIntAlarma) {
+      suma = vectorAlarma[0]+vectorAlarma[1]+vectorAlarma[2]+vectorAlarma[3]+vectorAlarma[4];
+
+      if(suma >= 2){
+        digitalWrite(Buzer,HIGH);
+        alarma = 1;
+        Serial.println("Se activo la alarma");
+      }
+
+      int vectorAlarma[] = {0,0,0,0,0,0};
+      indice = 0;
+      lastUpdateTimeAlarma = millis();
+    }
+    // Fin logica Buzer
+
     // Halt PICC
     rfid.PICC_HaltA();
     // Stop encryption on PCD
@@ -269,6 +347,7 @@ void loop() {
     write2TSData( channelID , 
                   dataFieldOne , vibracion, 
                   dataFieldTwo , Resultado,
-                  dataFieldThree , millis());     
+                  dataFieldThree , millis(),
+                  dataFieldFour , alarma);
   }
 }
