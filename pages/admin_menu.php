@@ -1,5 +1,5 @@
 <?php
-
+    header("Refresh:5"); // refresca la pagina web cada 3 segundos
     include "../conexion.php";
     include "../logic/admin_securityLogic.php";
 
@@ -7,10 +7,6 @@
     $nombre_admin   = $_SESSION['NOM_USUARIO'];
     $id_admin       = $_SESSION['ID_USUARIO'];
     $tipo_usuario   = $_SESSION['TIPO_USUARIO'];
-
-
-
-
 
 ?>
 
@@ -238,12 +234,16 @@
         -->
         <th>ID</th>
         <th>FECHA</th>
+        <th>HORA</th>
+        <th>VIBRACIÓN</th>
         <th>RFID</th>
         <th>ALARMA</th>
+
+
     </tr>
     <?php
         $mysqli = new mysqli($host, $user, $pw, $db);
-        $sqli = "SELECT * FROM alarma LIMIT 5";
+        $sqli = "SELECT * FROM alarma ORDER BY id DESC LIMIT 10";
         //$result = mysqli_query($conectar, $sqli);
         //while($mostrar = mysqli_fetch_array($result)){
         $result = $mysqli->query($sqli);
@@ -255,7 +255,25 @@
         echo $mostrar[0]?> 
         </td>
         <td><?php // fecha
-        echo $mostrar[4]?>
+        $my_array = str_split($mostrar[4]);
+        $fecha = array_slice($my_array, 0, 10);
+        $fecha1 = implode($fecha);
+        echo $fecha1?>
+        </td>
+        <td><?php // fecha
+        $my_array2 = str_split($mostrar[4]);
+        $fecha2 = array_slice($my_array2, 11);
+        $fecha21 = implode($fecha2);
+        echo $fecha21?>
+        </td>
+        <td><?php  // vibracion
+        if($mostrar[1]<1000){?>
+            <img src="../images/verde.png" width='60' height='60'/><?php 
+        }else if(($mostrar[1]>= 1000) && ($mostrar[1]< 3500)){?> 
+            <img src="../images/amarillo.png" width='92' height='60'/><?php 
+        }else{?> 
+            <img src="../images/rojo.png" width='85' height='85'/><?php 
+        }?>
         </td>
         <td><?php  // rfid
         if($mostrar[2]==1){?>

@@ -1,5 +1,5 @@
 <?php
-header("Refresh:2"); // refresca la pagina web cada 3 segundos
+header("Refresh:3"); // refresca la pagina web cada 3 segundos
 include "../conexion.php";
 $url = "https://api.thingspeak.com/channels/2014575/feeds.xml?results=1"; 
 $channel1 = simplexml_load_file($url); 
@@ -17,6 +17,7 @@ foreach ($channel1->feeds->feed as $nodo) {
     // Saco la fecha del xml
     $fechaNo = $nodo->{'created-at'};
     $my_array1 = str_split($fechaNo);
+    
     
     // Elimino la parte de la fechya que no se nececita
     $fecha1 = array_slice($my_array1, 0, 10);
@@ -51,7 +52,14 @@ echo "<br>";
 $dateOld = $row[0];
 echo "old: ".$dateOld."<br>";
 echo "presente: ".($dates[0])."<br>";
-if(trim($dates[0]) != trim($dateOld)){
+ 
+$comp = "0000-00-00 00:00:00";
+$myarray3 = str_split($dates[0]);
+$myarray3 = implode($myarray3);
+//echo $myarray3."<br>";
+
+
+if((trim($dates[0]) != trim($dateOld)) && ($myarray3 != $comp)){
     $dateOld = $dates[0];
      // Aqu� se hace la conexi�n a la base de datos.
 
