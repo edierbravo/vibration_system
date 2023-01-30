@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-07-2022 a las 15:45:41
--- Versión del servidor: 10.4.22-MariaDB
--- Versión de PHP: 7.4.27
+-- Tiempo de generación: 30-01-2023 a las 04:36:16
+-- Versión del servidor: 10.4.27-MariaDB
+-- Versión de PHP: 8.0.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,13 +24,34 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `alarma`
+--
+
+CREATE TABLE `alarma` (
+  `id` int(11) NOT NULL,
+  `vibracion` float NOT NULL,
+  `rfid` int(11) NOT NULL,
+  `alarma` int(11) NOT NULL,
+  `fecha` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `alarma`
+--
+
+INSERT INTO `alarma` (`id`, `vibracion`, `rfid`, `alarma`, `fecha`) VALUES
+(1, 4095, 2, 1, '2023-01-28 17:31:31');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `departamentos`
 --
 
 CREATE TABLE `departamentos` (
   `ID_Depart` int(11) NOT NULL,
   `Departamento` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `departamentos`
@@ -80,7 +101,7 @@ CREATE TABLE `municipios` (
   `ID_Municipio` int(11) NOT NULL,
   `ID_Departamento` int(11) NOT NULL,
   `Municipio` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `municipios`
@@ -1219,7 +1240,7 @@ INSERT INTO `municipios` (`ID_Municipio`, `ID_Departamento`, `Municipio`) VALUES
 CREATE TABLE `tipo_usuario` (
   `ID_USUARIO` int(20) NOT NULL,
   `DESCRIPCION` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_usuario`
@@ -1248,24 +1269,24 @@ CREATE TABLE `users` (
   `PASSWORD` varchar(10) NOT NULL,
   `TIPO_USUARIO` varchar(10) NOT NULL,
   `TIPO_PLAN` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `users`
 --
 
 INSERT INTO `users` (`NUM_REGISTRO`, `ID`, `NAME_LASTNAME`, `DATE`, `TYPE_ID`, `ADDRESS`, `DEPARTAMENTO`, `MUNICIPIO`, `CELLPHONE`, `PASSWORD`, `TIPO_USUARIO`, `TIPO_PLAN`) VALUES
-(2, 11111, 'DIEGO', '2005-06-10', 'CC', 'ASD', 'CAUCA', 'POPAYAN', '11111111', '123', 'Admin', ''),
-(46, 123124324, 'ASDASDAS', '2004-12-21', 'PST', 'ASDASD', 'GUAVIARE', 'CALAMAR', '23412312', '123', 'Cliente', 'BASIC'),
-(47, 2147483647, 'ASDADASD', '2004-12-22', 'CC', 'DFSDFSD', 'GUAVIARE', 'EL RETORNO', '23452341', '123', 'Cliente', 'BASIC'),
-(48, 123345652, 'ADADASDASD', '2004-12-14', 'CC', 'ASDASD', 'CESAR', 'EL PASO', '121235234', '123', 'Cliente', 'BASIC'),
-(49, 21342234, 'ASDFSFAAS', '2004-12-21', 'PST', '2DSZFADAS', 'CHOCO', 'BOJAYÁ', '12345424', '123', 'Cliente', 'PREMIUM'),
-(50, 123534123, 'SDFTWERWE', '2004-12-21', 'CC', 'ASDDFASD', 'CAUCA', 'SILVIA', '12341231', '123', 'Cliente', 'PREMIUM'),
-(54, 34532325, 'ANDRES HURTADO', '2004-12-21', 'CC', 'ADQWE', 'CAUCA', 'POPAYÁN', '3016616811', '123', 'Cliente', 'BASIC');
+(1, 12345, 'EDIER', '2005-06-10', 'CC', 'BRAVO', 'CAUCA', 'POPAYAN', '3165475285', '123', 'Admin', '');
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `alarma`
+--
+ALTER TABLE `alarma`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `departamentos`
@@ -1295,6 +1316,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `alarma`
+--
+ALTER TABLE `alarma`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `departamentos`

@@ -224,6 +224,7 @@
 <div class="contenedor_tabla">
 <table class="users_table">
     <tr>
+        <!-- 
         <th>NUMERO DE REGISTRO</th>
         <th>ID</th>
         <th>NOMBRE</th>
@@ -234,29 +235,45 @@
         <th>MUNICIPIO</th>
         <th>CELULAR</th>
         <th>TIPO DE USUARIO</th>
-
+        -->
+        <th>ID</th>
+        <th>FECHA</th>
+        <th>RFID</th>
+        <th>ALARMA</th>
     </tr>
     <?php
-        $sqli = "SELECT * FROM users";
-        $result = mysqli_query($conectar, $sqli);
-        while($mostrar = mysqli_fetch_array($result)){
+        $mysqli = new mysqli($host, $user, $pw, $db);
+        $sqli = "SELECT * FROM alarma LIMIT 5";
+        //$result = mysqli_query($conectar, $sqli);
+        //while($mostrar = mysqli_fetch_array($result)){
+        $result = $mysqli->query($sqli);
+        while($mostrar = $result->fetch_array(MYSQLI_NUM)){
     ?>
     <tr>
-
-
-
-        <td><?php echo $mostrar['NUM_REGISTRO']?></td>
-        <td><?php echo $mostrar['ID']?></td>
-        <td><?php echo $mostrar['NAME_LASTNAME']?></td>
-        <td><?php echo $mostrar['DATE']?></td>
-        <td><?php echo $mostrar['TYPE_ID']?></td>
-        <td><?php echo $mostrar['ADDRESS']?></td>
-        <td><?php echo $mostrar['DEPARTAMENTO']?></td>
-        <td><?php echo $mostrar['MUNICIPIO']?></td>
-        <td><?php echo $mostrar['CELLPHONE']?></td>
-        <td><?php echo $mostrar['TIPO_USUARIO']?></td>
-
-
+          
+        <td> <?php  // id
+        echo $mostrar[0]?> 
+        </td>
+        <td><?php // fecha
+        echo $mostrar[4]?>
+        </td>
+        <td><?php  // rfid
+        if($mostrar[2]==1){?>
+            <img src="../images/ok.png" width='60' height='60'/><?php 
+        }else if($mostrar[2]==0){?> 
+            <img src="../images/nook.png" width='60' height='60'/><?php 
+        }else{?> 
+            <img src="../images/anonimo.png" width='60' height='60'/><?php 
+        }?>
+        </td>
+        <td><?php  // alarma
+        if($mostrar[3]==1){?>
+            <img src="../images/alerta.png" width='60' height='60'/><?php 
+        }else{?> 
+            <img src="../images/noalerta.png" width='60' height='60'/><?php 
+        }?>
+        </td>
+        
     </tr>
     <?php
         }
