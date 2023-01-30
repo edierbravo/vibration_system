@@ -13,7 +13,7 @@ unsigned long channelID = 2014575;
 char* readAPIKey = (char*)"MCVF18UY83B6ODE9"; //"70GGTLNT0EMFP0WO";
 char* writeAPIKey = (char*)"CE9J7FJ9UB7CANQH"; //"7ZBZ9LU15LQRYKRF";
 const unsigned long postingInterval = 20L * 1000L;
-const unsigned long postingIntAlarma = 20L * 3500L;
+const unsigned long postingIntAlarma = 20L * 3250L;
 unsigned int dataFieldOne = 1;                       
 unsigned int dataFieldTwo = 2;                       
 unsigned int dataFieldThree = 3;                     
@@ -61,7 +61,7 @@ byte nuidPICC[4];
 
 String DatoHex;
 
-String UserReg[] = {"F9049E2E", "B33786A3", "7762C83B"};
+String UserReg[] = {"F9049E2E", "22BE5B4H", "7762C83B"};
 
 int Resultado = 0; //autorizado o no RFID
 
@@ -74,10 +74,11 @@ int Dig_out = 0; //variable
 int Ana_out = 0; // variable
 int B = 1; //boleado 1
 int Buzer=14; // led verificacion 14
+int maxVibra = 0;
 
 /////////////////// Configuracion WIFI ///////////////////
-char ssid[] = "EDWARD";//"FLIA MUCE";//"Bravo";//"Piso 1";//"TP-Link_B520";
-char password[] = "EDWARD12";//"4fliamuce2001";//"9003407381"; //"67097135";
+char ssid[] = "FLIA MUCE"; //"EDWARD";//"Bravo";//"Piso 1";//"TP-Link_B520";
+char password[] = "4fliamuce2001"; //"EDWARD12";//;//"9003407381"; //"67097135";
 WiFiClient client;              //Cliente Wifi para ThingSpeaK
 
 //////////////////************ FUNCIONES ***************/////////////////
@@ -120,15 +121,22 @@ int verifivarRfid( String UserRegisters[], String Dato){
 int LeerVibracion(int vb, int Avb){
   Dig_out = digitalRead(vb);
   Ana_out = analogRead(Avb);
-  Serial.print("     Anaolog : ");
   int AnaV = Ana_out;
   int AnaV1 = (Ana_out- 4095)*-1;
-  Serial.print(AnaV1);
-  Serial.print("  -   Digital :");
-  Serial.println(Dig_out);
 
+  // guardar el dato mayor
+  if(AnaV1 > maxVibra){
+    maxVibra = AnaV1;
+    //AnaV1 = maxVibra;
+    //Serial.println("Entro");
+  }
+  //Serial.println(maxVibra);
 
-  return AnaV1;
+  //Serial.print("     Anaolog : ");
+  //Serial.print(AnaV1);
+  //Serial.print("  -   Digital :");
+  //Serial.println(Dig_out);
+  return maxVibra;
 }
 
 // usa esta funcion siu solo quieres ecribir un solo campo
@@ -157,6 +165,7 @@ int write2TSData( long TSChannel, unsigned int TSField1,
 
   int printSuccess = ThingSpeak.writeFields( TSChannel, writeAPIKey );
   Serial.println("Subio datos");
+  maxVibra = 0; // reinicia el maximo de vibracion
   return printSuccess;
 }
 void setup() 
@@ -212,6 +221,7 @@ int alarma = 0;
 int suma = 0;
 
 void loop() {
+  int maxVibraEnviado = LeerVibracion(vb, Avb);
   // Only update if posting time is exceeded
   if (millis() - lastUpdateTime >=  postingInterval) {
     lastUpdateTime = millis();
@@ -223,7 +233,10 @@ void loop() {
       Serial.println("no hay ninguna tarjeta nueva presente en el sensor");
 
       int Resultado = 2;
-      int vibracion = LeerVibracion(vb, Avb);
+      //int vibracion = LeerVibracion(vb, Avb);
+      int vibracion = maxVibraEnviado;
+      Serial.print("     Anaolog : ");
+      Serial.println(vibracion);
 
     // Logica buzer
     if (vibracion > 1000){
@@ -313,7 +326,10 @@ void loop() {
     }
 
     //////// Leer sensor de vibracion
-    int vibracion = LeerVibracion(vb, Avb);
+    //int vibracion = LeerVibracion(vb, Avb);
+    int vibracion = maxVibraEnviado;
+    Serial.print("     Anaolog : ");
+    Serial.println(vibracion);
 
     // Logica buzer
     if (vibracion > 1000){
