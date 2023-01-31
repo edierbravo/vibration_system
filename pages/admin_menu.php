@@ -233,6 +233,7 @@
         <th>TIPO DE USUARIO</th>
         -->
         <th>ID</th>
+        <th>NOMBRE</th>
         <th>FECHA</th>
         <th>HORA</th>
         <th>VIBRACIÓN</th>
@@ -243,7 +244,7 @@
     </tr>
     <?php
         $mysqli = new mysqli($host, $user, $pw, $db);
-        $sqli = "SELECT * FROM alarma ORDER BY id DESC LIMIT 10";
+        $sqli = "SELECT * FROM alarma ORDER BY id DESC LIMIT 1000";
         //$result = mysqli_query($conectar, $sqli);
         //while($mostrar = mysqli_fetch_array($result)){
         $result = $mysqli->query($sqli);
@@ -254,38 +255,41 @@
         <td> <?php  // id
         echo $mostrar[0]?> 
         </td>
+        <td> <?php  // nombre
+        echo $mostrar[1]?> 
+        </td>
         <td><?php // fecha
-        $my_array = str_split($mostrar[4]);
+        $my_array = str_split($mostrar[5]);
         $fecha = array_slice($my_array, 0, 10);
         $fecha1 = implode($fecha);
         echo $fecha1?>
         </td>
         <td><?php // fecha
-        $my_array2 = str_split($mostrar[4]);
+        $my_array2 = str_split($mostrar[5]);
         $fecha2 = array_slice($my_array2, 11);
         $fecha21 = implode($fecha2);
         echo $fecha21?>
         </td>
         <td><?php  // vibracion
-        if($mostrar[1]<1000){?>
+        if($mostrar[2]<1000){?>
             <img src="../images/verde.png" width='60' height='60'/><?php 
-        }else if(($mostrar[1]>= 1000) && ($mostrar[1]< 3500)){?> 
+        }else if(($mostrar[2]>= 1000) && ($mostrar[2]< 3000)){?> 
             <img src="../images/amarillo.png" width='92' height='60'/><?php 
         }else{?> 
             <img src="../images/rojo.png" width='85' height='85'/><?php 
         }?>
         </td>
         <td><?php  // rfid
-        if($mostrar[2]==1){?>
+        if($mostrar[3]==1){?>
             <img src="../images/ok.png" width='60' height='60'/><?php 
-        }else if($mostrar[2]==0){?> 
+        }else if($mostrar[3]==0){?> 
             <img src="../images/nook.png" width='60' height='60'/><?php 
         }else{?> 
             <img src="../images/anonimo.png" width='60' height='60'/><?php 
         }?>
         </td>
         <td><?php  // alarma
-        if($mostrar[3]==1){?>
+        if($mostrar[4]==1){?>
             <img src="../images/alerta.png" width='60' height='60'/><?php 
         }else{?> 
             <img src="../images/noalerta.png" width='60' height='60'/><?php 
