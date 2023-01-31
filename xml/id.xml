@@ -10,17 +10,27 @@
          <recursoIoT>
             <tipo>sensor</tipo>
             <senal>analogico</senal>
-            <<voltaje rangoinicial="4" rangofinal="8" />
+            <voltaje rangoinicial="3.3" rangofinal="8" />
          </recursoIoT>
          <recursoIoT>
             <tipo>sensor</tipo>
             <senal>digital</senal>
-            <voltaje rangoinicial="2.5" rangofinal="3.3" />
+            <voltaje rangoinicial="3.3" rangofinal="8" />
          </recursoIoT>
          <recursoIoT>
             <tipo>actuador</tipo>
             <senal>digital</senal>
-            <voltaje rangoinicial="4" rangofinal="8" />
+            <voltaje rangoinicial="3.3" rangofinal="8" />
+         </recursoIoT>
+         <recursoIoT>
+            <tipo>actuador</tipo>
+            <senal>digital</senal>
+            <voltaje rangoinicial="3.3" rangofinal="4" />
+         </recursoIoT>
+         <recursoIoT>
+            <tipo>actuador</tipo>
+            <senal>digital</senal>
+            <voltaje rangoinicial="3.3" rangofinal="5" />
          </recursoIoT>
       </recursos>
    </gateway>
