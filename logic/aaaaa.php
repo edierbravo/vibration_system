@@ -1,7 +1,7 @@
 <?php
 header("Refresh:3"); // refresca la pagina web cada 3 segundos
 include "../conexion.php";
-$url = "https://api.thingspeak.com/channels/2014575/feeds.xml?results=1"; 
+$url = "https://api.thingspeak.com/channels/2014575/feeds.xml?results=1&quot;metadata=true&quot"; 
 $channel1 = simplexml_load_file($url); 
 $channel_name[] = (string)$channel1->name;
 //echo $channel->feeds->feed[0]->field1;
@@ -11,6 +11,9 @@ $channel_name[] = (string)$channel1->name;
 
 //$fecha = date("Y-m-d H:i:s");
 //$hora = date("h:i:s");
+
+$channel_metadata = (string)$channel1->metadata;
+echo $channel_metadata."<br>"."<br>";
 
 $i = 0;
 foreach ($channel1->feeds->feed as $nodo) {
@@ -58,12 +61,12 @@ $myarray3 = str_split($dates[0]);
 $myarray3 = implode($myarray3);
 //echo $myarray3."<br>";
 
-
+$nombre = "PUERTA PRINCIPAL";
 if((trim($dates[0]) != trim($dateOld)) && ($myarray3 != $comp)){
     $dateOld = $dates[0];
      // Aqu� se hace la conexi�n a la base de datos.
 
-    $sql1 = "INSERT into alarma (vibracion,rfid,alarma,fecha) VALUES ('$vibrates[0]', '$rfids[0]', '$alarms[0]', '$dates[0]')"; // Aqu� se ingresa el valor recibido a la base de datos.
+    $sql1 = "INSERT into alarma (nombre,vibracion,rfid,alarma,fecha) VALUES ('$nombre','$vibrates[0]', '$rfids[0]', '$alarms[0]', '$dates[0]')"; // Aqu� se ingresa el valor recibido a la base de datos.
     echo "sql1...".$sql1; // Se imprime la cadena sql enviada a la base de datos, se utiliza para depurar el programa php, en caso de alg�n error.
     $result1 = $mysqli->query($sql1);
 }else{

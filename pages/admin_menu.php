@@ -244,7 +244,7 @@
     </tr>
     <?php
         $mysqli = new mysqli($host, $user, $pw, $db);
-        $sqli = "SELECT * FROM alarma ORDER BY id DESC LIMIT 1000";
+        $sqli = "SELECT * FROM alarma ORDER BY id DESC LIMIT 10";
         //$result = mysqli_query($conectar, $sqli);
         //while($mostrar = mysqli_fetch_array($result)){
         $result = $mysqli->query($sqli);
