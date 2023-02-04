@@ -1,26 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<observacion>
-  <entidad nombre="Puerta">
+<observacion> 
+  <entidad nombre="puerta">
     <recursoIoT tipo="sensor">
-        <caracteristica propiedad="vibración">
-        </caracteristica>
-        <medicion>4095</medicion>
-        <unidad>analoga</unidad>
-        <hora utc="-5">7:26</hora>
-        <lugar lat="2.473" lon="-76.57" ele="1756"></lugar>
-    </recursoIoT>
-    <recursoIoT tipo="actuador">
-        <caracteristica propiedad="Buzer">
-        </caracteristica>
-        <!-- 1: Encendido 2:apagado -->
-        <estado>1</estado>
-        <hora utc="-5">7:26</hora>
-        <lugar lat="2.473" lon="-76.57" ele="1756"></lugar>
-    </recursoIoT>
-  </entidad>  
-  <entidad nombre="RFID">
-    <recursoIoT tipo="sensor">
-        <caracteristica propiedad="Ondas de radio">
+        <caracteristica propiedad="RFID">
         </caracteristica>
         <!-- 0: No autorizado 1:Autorizado 2: no hay tarjeta -->
         <medicion>1</medicion>

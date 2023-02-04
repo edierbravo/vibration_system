@@ -9,26 +9,31 @@
       <recursos>
          <recursoIoT>
             <tipo>sensor</tipo>
+            <nombre>RFID</nombre>
             <senal>analogico</senal>
             <voltaje rangoinicial="3.3" rangofinal="8" />
          </recursoIoT>
          <recursoIoT>
             <tipo>sensor</tipo>
+            <nombre>Vibracion</nombre>
             <senal>digital</senal>
             <voltaje rangoinicial="3.3" rangofinal="8" />
          </recursoIoT>
          <recursoIoT>
             <tipo>actuador</tipo>
+            <nombre>Buzer</nombre>
             <senal>digital</senal>
             <voltaje rangoinicial="3.3" rangofinal="8" />
          </recursoIoT>
          <recursoIoT>
             <tipo>actuador</tipo>
+            <nombre>Led verde</nombre>
             <senal>digital</senal>
-            <voltaje rangoinicial="3.3" rangofinal="4" />
+            <voltaje rangoinicial="3.3" rangofinal="5" />
          </recursoIoT>
          <recursoIoT>
             <tipo>actuador</tipo>
+            <nombre>Led rojo</nombre>
             <senal>digital</senal>
             <voltaje rangoinicial="3.3" rangofinal="5" />
          </recursoIoT>
