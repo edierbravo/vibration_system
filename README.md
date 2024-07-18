@@ -6,6 +6,6 @@ Se usa una ESP32 como gateway, un sensor RFID, un sensor de vibracion, un buzer,
 
 - En la rama **master** esta el desarrollo del codigo para el hardware mostrado en la siguiente imagen.
 
-![](https://github.com/edierbra/vibration_system/blob/master/Imagenes/circuito.png)
+![](Imagenes/circuito.png)
 
 - En la rama **web** esta el codigo desarrollado para la pagina web que funciona en conjunto con el hardware.
