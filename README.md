@@ -23,7 +23,7 @@ Para probar la correcta instalacioon de docker se hace una pequeña prueba media
 ```
 sudo docker run hello-world
 ```
-![Ver imagen: Hello World](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/hello_world.png?raw=true)
+![Ver imagen: Hello World](Images/hello_world.png)
 
 ## 3. Desarrollo
 ### Prerequisitos
@@ -38,7 +38,7 @@ Para esto se usan los siguientes comandos.
 ```
 ifconfig
 ```
-![Ver imagen: ifconfig](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/ifconfig.png?raw=true)
+![Ver imagen: ifconfig](Images/ifconfig.png)
 
 ### 3.2. Identificar los servicios y puertos ocupados
 Para esto se usan los siguientes comandos.
@@ -47,7 +47,7 @@ ss | grep containerd
 netstat | grep containerd
 lsof | grep containerd
 ```
-![Ver imagen: de servicios y puertos ocupados](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/servicios_puertos.png?raw=true)
+![Ver imagen: de servicios y puertos ocupados](Images/servicios_puertos.png)
 
 ### 3.3. Conexion TCP (Cliente y Servidor en la misma maquina Lubuntu)
 
@@ -120,11 +120,11 @@ finally:
 
 Dentro del directorio **/Documentos/server** se ejecuta el archivo **server.py** `python3 server.py` y luego el archivo **client.py** `python3 client.py`.
 
-![Ver imagen: conexion TCP](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/tcp.png?raw=true)
+![Ver imagen: conexion TCP](Images/tcp.png)
 
 Al ejecutar el comando `lsof -i -P -n` se puede observar que el puerto **10000** que se utilizo en la conexion servidor-cliente esta usado.
 
-![Ver imagen: puerto 10000 ocupado](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/puerto_10000.png?raw=true)
+![Ver imagen: puerto 10000 ocupado](Images/puerto_10000.png)
 
 ### 3.4. Conexion UDP (Cliente y Servidor en la misma maquina Lubuntu).
 
@@ -185,12 +185,12 @@ finally:
 
 Dentro del directorio **/Documentos/serverUDP** se ejecuta el archivo **server.py** `python3 server.py` y luego el archivo **client.py** `python3 client.py`.
 
-![Ver imagen: conexion UDP](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/udp.png?raw=true)
+![Ver imagen: conexion UDP](Images/udp.png)
 
 Al ejecutar el comando `lsof -i -P -n` se puede observar que el puerto **10000** que se utilizo en la conexion servidor-cliente esta usado.
 
 
-![Ver imagen: puerto 10000 ocupado](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/puerto_10000UDP.png?raw=true)
+![Ver imagen: puerto 10000 ocupado](Images/puerto_10000UDP.png)
 
 ### 3.5. Conexion TCP (Cliente Windows y servidor Lubuntu).
 
@@ -231,7 +231,7 @@ finally:
 
 Se ejecuta el archivo **server.py** `python3 server.py` en la maquina Lubuntu y luego el archivo **cliente.py** en Windows.
 
-![Ver imagen: conexion TCP desde diferentes maquinas](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/tcpWindows.png?raw=true)
+![Ver imagen: conexion TCP desde diferentes maquinas](Images/tcpWindows.png)
 
 ### 3.6. Conexion UDP (Cliente Windows y servidor Lubuntu).
 
@@ -272,7 +272,7 @@ finally:
 
 Se ejecuta el archivo **server.py** `python3 server.py` en la maquina Lubuntu y luego el archivo **client.py** en Windows.
 
-![Ver imagen: conexion TCP desde diferentes maquinas](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_1/Images/udpWindows.png?raw=true)
+![Ver imagen: conexion TCP desde diferentes maquinas](Images/udpWindows.png)
 
 De acuerdo a lo anterior se puede decir que entre sus cararcteristicas principales se encuentran:
 
