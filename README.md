@@ -212,7 +212,7 @@ export class TicketFullController {
 }
 ```
 
-Hasta este punto la practica queda como se obserba en este [Link](https://github.com/edierbra/Practicas_IoT_Edier/blob/6f89a3c6aaffe1e7c313311c3f2bb8604b9e167b/src/ticketfull/adapters/controladores/ticketfull.controller.ts)
+Hasta este punto la practica queda como se obserba en este [Link](https://github.com/edierbravo/Practicas_IoT_Edier/blob/6f89a3c6aaffe1e7c313311c3f2bb8604b9e167b/src/ticketfull/adapters/controladores/ticketfull.controller.ts)
 
 6. Es importante aplicar el principio SOLID, el cual define los siguientes principios:
 
@@ -244,11 +244,11 @@ nest g module auth
 nest g service auth
 ```
 
-![nestAuth](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/nestAuth.png?raw=true)
+![nestAuth](Images/nestAuth.png)
 
 Acontiniacion se podra ver una carpeta llamada **auth** dentro de **src** y contendra los archivos **auth.module.ts**, **auth.service.ts** y **auth.service.spec.ts**. Este ultimo contiene las pruebas unitarias del servicio, el cual no se utilizara.
 
-![Archivos carpeta auth](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/auth.png?raw=true)
+![Archivos carpeta auth](Images/auth.png)
 
 3. **NestJS** tambien permite crear un modulo para gestionar usuarios, para lo cual se ejecutan los siguientes comandos dentro de la carpeta del proyecto. Esto creara una nueva carpeta llamada **users** dentro de **src**
 
@@ -256,7 +256,7 @@ Acontiniacion se podra ver una carpeta llamada **auth** dentro de **src** y cont
 nest g module users
 nest g service users
 ```
-![nestUsers](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/nestUsers.png?raw=true)
+![nestUsers](Images/nestUsers.png)
 
 4. Para implementar el servicio de usuarios se modifica el archivo **users.service.ts** que esta dentro de la carpeta **users** de la siguiente manera. Este archivo contendra los usarios y sus respectivas contraseñas y se usara por el servicio de autenticacion.
 
@@ -467,15 +467,15 @@ export class TicketFullControllerImpl implements TicketFullController {
 11. Se realiuzan las respectivas pruebas.
 
 Al realisar una solicitud POST se observa lo siguiente.
-![Post sencillo](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/postSencillo.png?raw=true)
+![Post sencillo](Images/postSencillo.png)
 
 En la anterior imagen se puede observar que la solicitud se realiza pero el usuario y contraseña quedan en el obejeto creado, lo cual no deberia pasar.
 
 Si se quita el usuario y contraseña al hacer la solicitud POST se tiene un error 401 como se muestra a continuacion. Esto pasa por que se prohibe el servicio por falta de autenticacion de usuario.
  
-![post sencillo fail](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/postSencilloFail.png?raw=true)
+![post sencillo fail](Images/postSencilloFail.png)
 
-Hasta aqui la configuracion del proyecto queda como se muestra en este [Link.](https://github.com/edierbra/Practicas_IoT_Edier/tree/08eaf1e86cd77b2e191bb387cf38ea5acc13acfc)
+Hasta aqui la configuracion del proyecto queda como se muestra en este [Link.](https://github.com/edierbravo/Practicas_IoT_Edier/tree/08eaf1e86cd77b2e191bb387cf38ea5acc13acfc)
 
 # Autenticación con JWT
 
@@ -486,7 +486,7 @@ npm install --save @nestjs/jwt passport-jwt
 npm install --save-dev @types/passport-jwt
 ```
 
-![nestJwt](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/nestJWT.png?raw=true)
+![nestJwt](Images/nestJWT.png)
 
 2. Se agrega el metodo login y algunas dependencias al archivo **auth.service.ts**
 
@@ -634,7 +634,7 @@ export class AuthModule {}
 curl -X POST http://localhost:3000/auth/login -d '{"username": "edier", "password": "bravo" }' -H "Content-Type: application/json"
 ```
 
-![Token](https://github.com/edierbra/Practicas_IoT_Edier/blob/main/Practica_3/Images/accessToken.png?raw=true)
+![Token](Images/accessToken.png)
 
 11. Se protegen los endpoints que sea necesario, para lo cual el controlador queda de la siguiente manera.
 
@@ -712,7 +712,7 @@ export class TicketFullControllerImpl implements TicketFullController {
 }
 ```
 
-finalmente la configuracion del proyecto queda como se muestra en este [Link.](https://github.com/edierbra/Practicas_IoT_Edier/tree/ff56f6154b51f3c797c53b372c1c9b25e94dd2f1)
+finalmente la configuracion del proyecto queda como se muestra en este [Link.](https://github.com/edierbravo/Practicas_IoT_Edier/tree/ff56f6154b51f3c797c53b372c1c9b25e94dd2f1)
 
 12. Se realizan pruebas en la herramienta **Postman**.
 
@@ -724,23 +724,23 @@ acontinuacion se muestran algunas imagenes al ejecutar ciertos metodos despues d
 
 **Metodo GET** (Consultar tiquetes )
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/get.png?raw=true)
+![Ver imagen](Images/get.png)
 
 **Metodo POST** (Crear un tiquete)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/post.png?raw=true)
+![Ver imagen](Images/post.png)
 
 **Metodo PUT** (Actualiza un tiquete)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/put.png?raw=true)
+![Ver imagen](Images/put.png)
 
 **Metodo PATCH** (Modificar la fecha de regreso del tiquete)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/patch.png?raw=true)
+![Ver imagen](Images/patch.png)
 
 **Metodo DELETE** (Eliminar un tiquete)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/Practica_3/Images/delete.png?raw=true)
+![Ver imagen](Images/delete.png)
 
 
 
