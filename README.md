@@ -4,7 +4,7 @@ En este proyecto se encuentra el desarrollo de  un sistema detector de vibracion
 
 Se usa una ESP32 como gateway, un sensor RFID, un sensor de vibracion, un buzer, un led rojo y un led verde
 
-- En la rama **master** esta el desarrollo del codigo para el hardware mostrado en la siguiente imagen.
+- En la rama **main** esta el desarrollo del codigo para el hardware mostrado en la siguiente imagen.
 
 ![](Imagenes/circuito.png)
 
