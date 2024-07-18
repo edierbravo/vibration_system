@@ -76,7 +76,7 @@ node -v
 npm -v
 ```
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/versionNodeNpm.png?raw=true)
+![Ver imagen](Images/versionNodeNpm.png)
 
 
 Es importante crear un espacio para los recursos globales de nodejs para lo cual se usan los siguientes comandos.
@@ -116,7 +116,7 @@ nest new practica2
 
 Durante la ejecucion del anterior comando elegir la opcion **npm**.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/nestNewPractica2.png?raw=true)
+![Ver imagen](Images/nestNewPractica2.png)
 
 Se identifica la direccion IP de nuestra maquina.
 
@@ -124,7 +124,7 @@ Se identifica la direccion IP de nuestra maquina.
 hostname -I
 ```
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/HostmaneI.png?raw=true)
+![Ver imagen](Images/HostmaneI.png)
 
 Se ingresa a la carpeta **practica2**.
 
@@ -134,7 +134,7 @@ cd practica2
 
 Dentro de esta carpeta se encuentra un archivo **package.json**, el cual define los scripts que se ejecutan con el comando **npm run** o **yarn run**. Este archivo contiene la siguiente informacion.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/catPackage.png?raw=true)
+![Ver imagen](Images/catPackage.png)
 
 Para ejecutar el ejemplo **Hello World** se usa el comando.
 
@@ -142,7 +142,7 @@ Para ejecutar el ejemplo **Hello World** se usa el comando.
 npm run start:dev
 ```
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/npmRunStartDev.png?raw=true)
+![Ver imagen](Images/npmRunStartDev.png)
 
 De este modo ya se puede realizar peticiones GET desde la ruta raiz. Por defecto el servidor usa el puerto **3000**, para observar esto se ejecuta el siguiente comando.
 
@@ -150,7 +150,7 @@ De este modo ya se puede realizar peticiones GET desde la ruta raiz. Por defecto
 netstat -tulpn | grep node
 ```
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/grepNode.png?raw=true)
+![Ver imagen](Images/grepNode.png)
 
 Para hacer una peticion GET al servidor se usa.
 
@@ -158,11 +158,11 @@ Para hacer una peticion GET al servidor se usa.
 curl http://localhost:3000
 ```
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/HelloWorld.png?raw=true)
+![Ver imagen](Images/HelloWorld.png)
 
 Desde el navegador tambien se puede observar un comportamiento similar ingreando **http://192.168.20.194:3000**, donde la direccion IP es la de la maquina donde se esta trabajando.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/HelloWorlNavegador.png?raw=true)
+![Ver imagen](Images/HelloWorlNavegador.png)
 
 ## 3. Publicar el codigo en Github
 
@@ -179,7 +179,7 @@ cd ~/Documents/Servidores/practica2
 Se inicia nuestro repositorio en GitHub mediante el siguiente comando, donde la url es la url de nuestro repositorio.
 
 ```
-git remote add origin https://github.com/edierbra/Practicas_IoT.git
+git remote add origin https://github.com/edierbravo/Practicas_IoT.git
 ```
 
 Se inicializa la carpeta de nuestro proyecto.
@@ -206,7 +206,7 @@ Finalmente se carga el contennido de nuestro proyecto al repositorio Hithub.
 git push --set-upstream origin master
 ```
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/gitPushSetUpstreamOriginMaster.png?raw=true)
+![Ver imagen](Images/gitPushSetUpstreamOriginMaster.png)
 
 ## 4. Verbos HTTP
 
@@ -221,7 +221,7 @@ Una vez haber ingresado a nuestra maquina virtual mediante **VSCode**, acceder a
 
 Dentro de la carpeta de nuestro proyecto se encuentra un archivo llamado **app.controller.ts**, el cual ejecuta una peticion GET al servidor y tiene el siguiente contenido.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/appControllersTs.png?raw=true)
+![Ver imagen](Images/appControllersTs.png)
 
 Se modifica el contenido del metodo GET de este archivo de la siguiente manera y asi cambiar el comportamiento del servidor.
 
@@ -238,7 +238,7 @@ Para verificar los cambios realisados ejecutar en el terminal `curl http://192.1
 
 Acontinuacion se presenta el resultado en el terminal de la maquina virtual.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/HolaEdier.png?raw=true)
+![Ver imagen](Images/HolaEdier.png)
 
 Para agregar un metodo POST se crea una variable para asi guardar un mensaje adicional y ser retomada por el metodo GET. Luego se agrega un metodo POST el cual tiene el parametro **nombre** como entrada, Por lo tanto **app.controller.ts** queda de la siguiente manera.
 
@@ -270,7 +270,7 @@ Para ejecutar el metodo POST en la terminal de la maquina virtual se usa.
 curl -X POST http://<ip_del_servidor>:3000/Pikachu
 ```
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/postTerminal.png?raw=true)
+![Ver imagen](Images/postTerminal.png)
 
 Se sube los cambios frealizados, para lo cual se ejecutan los siguientes comandos
 
@@ -281,7 +281,7 @@ git commit -m "Se agrego un metodo POST"
 git push origin master
 ```
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/SeAgregoUnNuevoMetodoPOST.png?raw=true)
+![Ver imagen](Images/SeAgregoUnNuevoMetodoPOST.png)
 
 ## 5. Seleccionar un tema para moldear como una entidad.
 
@@ -363,23 +363,23 @@ Para comprobar el correcto funcionamiento del servidor se usa la herramienta **P
 
 **Metodo GET** (Consultar reservas de vuelos)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/get.png?raw=true)
+![Ver imagen](Images/get.png)
 
 **Metodo POST** (Crear una nueva reserva)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/post.png?raw=true)
+![Ver imagen](Images/post.png)
 
 **Metodo PUT** (Actualiza una reserva)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/put.png?raw=true)
+![Ver imagen](Images/put.png)
 
 **Metodo PATCH** (Modificar cantidad de personas de una reserva)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/patch.png?raw=true)
+![Ver imagen](Images/patch.png)
 
 **Metodo DELETE** (Eliminar una reserva)
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_2/Images/delete.png?raw=true)
+![Ver imagen](Images/delete.png)
 
 Finalmente se actualiza el repositorio Hithub.
 
