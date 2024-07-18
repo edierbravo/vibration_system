@@ -125,9 +125,9 @@ deta new --node ./<directorio_del_proyecto>/
 
 Una vez ejecutado el aterior comando te debe aparecer lo siguiente en la terminal
 
-![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/detaNewNode.png?raw=true)
+![](images/detaNewNode.png)
 
-![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/detaNewNode2.png?raw=true)
+![](images/detaNewNode2.png)
 
 
 Se desplega la aplicacion mediante el comando.
@@ -144,11 +144,11 @@ deta visor enable
 
 Nos dirigimos a la pagina de **Deta** donde anteriormente se habia iniciado sesion, ahi nos ubicamos en la seccion de **micros** donde se observara una opcion con el nombre de nuestro proyecto en la cual se encontrara la **url** del servicio desplegado.
 
-![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/interfazDeta.png?raw=true)
+![](images/interfazDeta.png)
 
 Al abrir la url aparecera lo siguiente. lo cual corresponde a lo que se obtiene al implementar un metodo GET.
 
-![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/urlDeta.png?raw=true)
+![](images/urlDeta.png)
 
 ### 2. Conectado a una base de datos.
 
@@ -161,19 +161,19 @@ Para crear nuestra base de datos seguir los siguientes pasos:
 
 3. Una vez creado el cluster, es necesario crear un usuario, En los campos correspondientes ingrese un nombre de usuario y una contraseña y Presione el botón **Add User.**
 
-![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/userCreate.png?raw=true)
+![](images/userCreate.png)
 
 4. Para facilitar la conexión la base de datos se recomienda crear una IP whitelist, para ello presione el botón **Add IP Address** y seleccione la opción **Allow Access from Anywhere**. Presione el botón **Confirm**. Si no encuentra esta opción ingrese una IP Address y en el campo asigne el valor **0.0.0.0**, finalmente presione el botón **Add Entry**.
 
-![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/ingresandoIp.png?raw=true)
+![](images/ingresandoIp.png)
 
 5. Finalmente se guarda y despliegua haciendo click en el botón **Finish and close**. En este punto ya tendrá una base de datos MongoDB lista para ser utilizada.
 
-![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/dataBaseOk.png?raw=true)
+![](images/dataBaseOk.png)
 
 Se instalan las dependencias de TypeORM y MongoDB 
 
-![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/installMongodb.png?raw=true)
+![](images/installMongodb.png)
 
 En el panel de mongo atlas, en la sección **Connect** seleccione la opción **Connect your application**. Copie la url de conexión y reemplace el valor de la variable MONGO_URL en el archivo **~/Documents/Servidores/practica2/src/app.module.ts** por la url de conexion; ademas, se agrega la entidad en la configuración del módulo para habilitar el repositorio. Por lo tanto el archivo queda.
 
@@ -296,7 +296,7 @@ Finalmente se ejecuta el proyecto.
 npm run start:dev
 ```
 
-![](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/npmrunstartdev.png?raw=true)
+![](images/npmrunstartdev.png)
 
 Acontinuacion se hara la implementacion de los diferentes metodos mediante la herramienta **Postman**
 
@@ -304,57 +304,57 @@ Acontinuacion se hara la implementacion de los diferentes metodos mediante la he
 
 Implementando Metodo GET en la herramienta Postman.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/get0.png?raw=true)
+![Ver imagen](images/get0.png)
 
 En la siguiente imagen observamos los datos en la base de datos MongoDB, en la cual se tienen 8 registros.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/getdb.png?raw=true)
+![Ver imagen](images/getdb.png)
 
 **Metodo POST** (Crear un tiquete)
 
 Implementando Metodo POST en la herramienta Postman.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/post0.png?raw=true)
+![Ver imagen](images/post0.png)
 
 Acontinuacion se observa que se agrego un nuevo tiquete a la base de datos mongoDB.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/post0db.png?raw=true)
+![Ver imagen](images/post0db.png)
 
 **Metodo PUT** (Actualiza un tiquete)
 
 El primer registro en al base de datos es:
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/putdb1.png?raw=true)
+![Ver imagen](images/putdb1.png)
 
 
 Se implementa el metodo PUT en la herramienta MongoDB.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/put2.png?raw=true)
+![Ver imagen](images/put2.png)
 
 Acontinuacion se observa que el primer registro en la base de datos fue reemplazado por el nuevo registro.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/putdb3.png?raw=true)
+![Ver imagen](images/putdb3.png)
 
 **Metodo PATCH** (Modificar la fecha de regreso del tiquete)
 
 El primer registro en la base de datos es.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/patchdb1.png?raw=true)
+![Ver imagen](images/patchdb1.png)
 
 Se ejecuta el metodo PATCH en el cual se quiere cambiar la fecha de retorno de dicho tiquete.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/patch4.png?raw=true)
+![Ver imagen](images/patch4.png)
 
 Acontinuacion se observa en la base de datos que dicho cambio fue realizado correctamente.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/patchdb3.png?raw=true)
+![Ver imagen](images/patchdb3.png)
 
 **Metodo DELETE** (Eliminar un tiquete)
 
 Acontinuacion se ejecuta el Metodo DELETE, con el fin de eliminar el primer registro de la base de datos.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/delete01.png?raw=true)
+![Ver imagen](images/delete01.png)
 
 En la siguiente imagen se puede obserbar que el primer registro fue eliminado.
 
-![Ver imagen](https://github.com/edierbra/Practicas_IoT/blob/main/practica_4/images/delete02.png?raw=true)
+![Ver imagen](images/delete02.png)
